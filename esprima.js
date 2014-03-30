@@ -176,7 +176,8 @@ parseYieldExpression: true
         VariableDeclarator: 'VariableDeclarator',
         WhileStatement: 'WhileStatement',
         WithStatement: 'WithStatement',
-        YieldExpression: 'YieldExpression'
+        YieldExpression: 'YieldExpression',
+        AwaitExpression: 'AwaitExpression'
     };
 
     PropertyKind = {
@@ -336,6 +337,8 @@ parseYieldExpression: true
         case 'public':
         case 'static':
         case 'yield':
+        case 'async':
+        case 'await':
         case 'let':
             return true;
         default:
@@ -1518,6 +1521,13 @@ parseYieldExpression: true
         return result;
     }
 
+    function rewind(token) {
+        index = token.range[0];
+        lineNumber = token.lineNumber;
+        lineStart = token.lineStart;
+        lookahead = token;
+    }
+
     function markerCreate() {
         if (!extra.loc && !extra.range) {
             return undefined;
@@ -1737,8 +1747,8 @@ parseYieldExpression: true
             };
         },
 
-        createFunctionDeclaration: function (id, params, defaults, body, rest, generator, expression) {
-            return {
+        createFunctionDeclaration: function (id, params, defaults, body, rest, generator, expression, isAsync) {
+            var funDecl = {
                 type: Syntax.FunctionDeclaration,
                 id: id,
                 params: params,
@@ -1748,10 +1758,16 @@ parseYieldExpression: true
                 generator: generator,
                 expression: expression
             };
+
+            if (isAsync) {
+                funDecl.async = true;
+            }
+
+            return funDecl;
         },
 
-        createFunctionExpression: function (id, params, defaults, body, rest, generator, expression) {
-            return {
+        createFunctionExpression: function (id, params, defaults, body, rest, generator, expression, isAsync) {
+            var funExpr = {
                 type: Syntax.FunctionExpression,
                 id: id,
                 params: params,
@@ -1761,6 +1777,12 @@ parseYieldExpression: true
                 generator: generator,
                 expression: expression
             };
+
+            if (isAsync) {
+                funExpr.async = true;
+            }
+
+            return funExpr;
         },
 
         createIdentifier: function (name) {
@@ -1980,8 +2002,8 @@ parseYieldExpression: true
             };
         },
 
-        createArrowFunctionExpression: function (params, defaults, body, rest, expression) {
-            return {
+        createArrowFunctionExpression: function (params, defaults, body, rest, expression, isAsync) {
+            var arrowExpr = {
                 type: Syntax.ArrowFunctionExpression,
                 id: null,
                 params: params,
@@ -1991,6 +2013,12 @@ parseYieldExpression: true
                 generator: false,
                 expression: expression
             };
+
+            if (isAsync) {
+                arrowExpr.async = true;
+            }
+
+            return arrowExpr;
         },
 
         createMethodDefinition: function (propertyType, kind, key, value) {
@@ -2073,6 +2101,14 @@ parseYieldExpression: true
                 type: Syntax.YieldExpression,
                 argument: argument,
                 delegate: delegate
+            };
+        },
+
+        createAwaitExpression: function (argument, all) {
+            return {
+                type: Syntax.AwaitExpression,
+                argument: argument,
+                all: !!all
             };
         },
 
@@ -2254,14 +2290,20 @@ parseYieldExpression: true
             op === '|=';
     }
 
-    // Note that 'yield' is treated as a keyword in strict mode, but as a
-    // contextual keyword (identifier) in non-strict mode, so we need to
-    // use matchKeyword and matchContextualKeyword appropriately.
+    // Note that 'yield' and 'async' are treated as keywords in strict
+    // mode, but as contextual keywords (identifiers) in non-strict mode,
+    // so we need to use matchKeyword and matchContextualKeyword
+    // appropriately.
 
     function matchYield() {
         return state.yieldAllowed && (
             strict ? matchKeyword : matchContextualKeyword
         )('yield');
+    }
+
+    function matchAsync() {
+        return (strict ? matchKeyword : matchContextualKeyword)('async') &&
+            !peekLineTerminator();
     }
 
     function consumeSemicolon() {
@@ -2371,12 +2413,14 @@ parseYieldExpression: true
     // 11.1.5 Object Initialiser
 
     function parsePropertyFunction(options) {
-        var previousStrict, previousYieldAllowed, params, defaults, body,
-            marker = markerCreate();
+        var previousStrict, previousYieldAllowed, previousAwaitAllowed,
+            params, defaults, body, marker = markerCreate();
 
         previousStrict = strict;
         previousYieldAllowed = state.yieldAllowed;
         state.yieldAllowed = options.generator;
+        previousAwaitAllowed = state.awaitAllowed;
+        state.awaitAllowed = options.async;
         params = options.params || [];
         defaults = options.defaults || [];
 
@@ -2386,6 +2430,7 @@ parseYieldExpression: true
         }
         strict = previousStrict;
         state.yieldAllowed = previousYieldAllowed;
+        state.awaitAllowed = previousAwaitAllowed;
 
         return markerApply(marker, delegate.createFunctionExpression(
             null,
@@ -2394,7 +2439,8 @@ parseYieldExpression: true
             body,
             options.rest || null,
             options.generator,
-            body.type !== Syntax.BlockStatement
+            body.type !== Syntax.BlockStatement,
+            options.async
         ));
     }
 
@@ -2411,12 +2457,12 @@ parseYieldExpression: true
             throwErrorTolerant(tmp.stricted, tmp.message);
         }
 
-
         method = parsePropertyFunction({
             params: tmp.params,
             defaults: tmp.defaults,
             rest: tmp.rest,
-            generator: options.generator
+            generator: options.generator,
+            async: options.async
         });
 
         strict = previousStrict;
@@ -2461,7 +2507,7 @@ parseYieldExpression: true
         token = lookahead;
         computed = (token.value === '[');
 
-        if (token.type === Token.Identifier || computed) {
+        if (token.type === Token.Identifier || computed || matchAsync()) {
             id = parseObjectPropertyKey();
 
             if (match(':')) {
@@ -2543,6 +2589,26 @@ parseYieldExpression: true
                             name: token
                         }),
                         false,
+                        false,
+                        computed
+                    )
+                );
+            }
+
+            if (token.value === 'async') {
+                computed = (lookahead.value === '[');
+                key = parseObjectPropertyKey();
+
+                return markerApply(
+                    marker,
+                    delegate.createProperty(
+                        'init',
+                        key,
+                        parsePropertyMethodFunction({
+                            generator: false,
+                            async: true
+                        }),
+                        true,
                         false,
                         computed
                     )
@@ -2676,6 +2742,18 @@ parseYieldExpression: true
         return expr;
     }
 
+    function matchAsyncFuncExprOrDecl() {
+        var token;
+
+        if (matchAsync()) {
+            token = lookahead2();
+            if (token.type === Token.Keyword && token.value === 'function') {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     // 11.1 Primary Expressions
 
@@ -2683,6 +2761,10 @@ parseYieldExpression: true
         var marker, type, token, expr;
 
         type = lookahead.type;
+
+        if (matchAsyncFuncExprOrDecl()) {
+            return parseFunctionExpression();
+        }
 
         if (type === Token.Identifier) {
             marker = markerCreate();
@@ -3234,13 +3316,15 @@ parseYieldExpression: true
     }
 
     function parseArrowFunctionExpression(options, marker) {
-        var previousStrict, previousYieldAllowed, body;
+        var previousStrict, previousYieldAllowed, previousAwaitAllowed, body;
 
         expect('=>');
 
         previousStrict = strict;
         previousYieldAllowed = state.yieldAllowed;
         state.yieldAllowed = false;
+        previousAwaitAllowed = state.awaitAllowed;
+        state.awaitAllowed = !!options.async;
         body = parseConciseBody();
 
         if (strict && options.firstRestricted) {
@@ -3252,18 +3336,21 @@ parseYieldExpression: true
 
         strict = previousStrict;
         state.yieldAllowed = previousYieldAllowed;
+        state.awaitAllowed = previousAwaitAllowed;
 
         return markerApply(marker, delegate.createArrowFunctionExpression(
             options.params,
             options.defaults,
             body,
             options.rest,
-            body.type !== Syntax.BlockStatement
+            body.type !== Syntax.BlockStatement,
+            !!options.async
         ));
     }
 
     function parseAssignmentExpression() {
-        var marker, expr, token, params, oldParenthesizedCount;
+        var marker, expr, token, params, oldParenthesizedCount,
+            backtrackToken = lookahead, possiblyAsync = false;
 
         if (matchYield()) {
             return parseYieldExpression();
@@ -3273,6 +3360,19 @@ parseYieldExpression: true
 
         marker = markerCreate();
 
+        if (matchAsyncFuncExprOrDecl()) {
+            return parseFunctionExpression();
+        }
+
+        if (matchAsync()) {
+            // We can't be completely sure that this 'async' token is
+            // actually a contextual keyword modifying a function
+            // expression, so we might have to un-lex() it later by
+            // calling rewind(backtrackToken).
+            possiblyAsync = true;
+            lex();
+        }
+
         if (match('(')) {
             token = lookahead2();
             if ((token.type === Token.Punctuator && token.value === ')') || token.value === '...') {
@@ -3280,11 +3380,21 @@ parseYieldExpression: true
                 if (!match('=>')) {
                     throwUnexpected(lex());
                 }
+                params.async = possiblyAsync;
                 return parseArrowFunctionExpression(params, marker);
             }
         }
 
         token = lookahead;
+
+        // If the 'async' keyword is not followed by a '(' character or an
+        // identifier, then it can't be an arrow function modifier, and we
+        // should interpret it as a normal identifer.
+        if (possiblyAsync && !match('(') && token.type !== Token.Identifier) {
+            possiblyAsync = false;
+            rewind(backtrackToken);
+        }
+
         expr = parseConditionalExpression();
 
         if (match('=>') &&
@@ -3296,8 +3406,18 @@ parseYieldExpression: true
                 params = reinterpretAsCoverFormalsList(expr.expressions);
             }
             if (params) {
+                params.async = possiblyAsync;
                 return parseArrowFunctionExpression(params, marker);
             }
+        }
+
+        // If we haven't returned by now, then the 'async' keyword was not
+        // a function modifier, and we should rewind and interpret it as a
+        // normal identifier.
+        if (possiblyAsync) {
+            possiblyAsync = false;
+            rewind(backtrackToken);
+            expr = parseConditionalExpression();
         }
 
         if (matchAssign()) {
@@ -4196,6 +4316,10 @@ parseYieldExpression: true
             }
         }
 
+        if (matchAsyncFuncExprOrDecl()) {
+            return parseFunctionDeclaration();
+        }
+
         marker = markerCreate();
         expr = parseExpression();
 
@@ -4398,8 +4522,15 @@ parseYieldExpression: true
     }
 
     function parseFunctionDeclaration() {
-        var id, body, token, tmp, firstRestricted, message, previousStrict, previousYieldAllowed, generator,
+        var id, body, token, tmp, firstRestricted, message, generator, isAsync,
+            previousStrict, previousYieldAllowed, previousAwaitAllowed,
             marker = markerCreate();
+
+        isAsync = false;
+        if (matchAsync()) {
+            lex();
+            isAsync = true;
+        }
 
         expectKeyword('function');
 
@@ -4436,6 +4567,8 @@ parseYieldExpression: true
         previousStrict = strict;
         previousYieldAllowed = state.yieldAllowed;
         state.yieldAllowed = generator;
+        previousAwaitAllowed = state.awaitAllowed;
+        state.awaitAllowed = isAsync;
 
         body = parseFunctionSourceElements();
 
@@ -4447,13 +4580,21 @@ parseYieldExpression: true
         }
         strict = previousStrict;
         state.yieldAllowed = previousYieldAllowed;
+        state.awaitAllowed = previousAwaitAllowed;
 
-        return markerApply(marker, delegate.createFunctionDeclaration(id, tmp.params, tmp.defaults, body, tmp.rest, generator, false));
+        return markerApply(marker, delegate.createFunctionDeclaration(id, tmp.params, tmp.defaults, body, tmp.rest, generator, false, isAsync));
     }
 
     function parseFunctionExpression() {
-        var token, id = null, firstRestricted, message, tmp, body, previousStrict, previousYieldAllowed, generator,
+        var token, id = null, firstRestricted, message, tmp, body, generator, isAsync,
+            previousStrict, previousYieldAllowed, previousAwaitAllowed,
             marker = markerCreate();
+
+        isAsync = false;
+        if (matchAsync()) {
+            lex();
+            isAsync = true;
+        }
 
         expectKeyword('function');
 
@@ -4491,6 +4632,8 @@ parseYieldExpression: true
         previousStrict = strict;
         previousYieldAllowed = state.yieldAllowed;
         state.yieldAllowed = generator;
+        previousAwaitAllowed = state.awaitAllowed;
+        state.awaitAllowed = isAsync;
 
         body = parseFunctionSourceElements();
 
@@ -4502,8 +4645,9 @@ parseYieldExpression: true
         }
         strict = previousStrict;
         state.yieldAllowed = previousYieldAllowed;
+        state.awaitAllowed = previousAwaitAllowed;
 
-        return markerApply(marker, delegate.createFunctionExpression(id, tmp.params, tmp.defaults, body, tmp.rest, generator, false));
+        return markerApply(marker, delegate.createFunctionExpression(id, tmp.params, tmp.defaults, body, tmp.rest, generator, false, isAsync));
     }
 
     function parseYieldExpression() {
@@ -4527,7 +4671,7 @@ parseYieldExpression: true
 
     function parseMethodDefinition(existingPropNames) {
         var token, key, param, propType, isValidDuplicateProp = false,
-            marker = markerCreate();
+            isAsync, marker = markerCreate();
 
         if (lookahead.value === 'static') {
             propType = ClassPropertyType.static;
@@ -4612,6 +4756,11 @@ parseYieldExpression: true
             ));
         }
 
+        isAsync = token.value === 'async' && !match('(');
+        if (isAsync) {
+            key = parseObjectPropertyKey();
+        }
+
         // It is a syntax error if any other properties have the same name as a
         // non-getter, non-setter method
         if (existingPropNames[propType].hasOwnProperty(key.name)) {
@@ -4625,7 +4774,10 @@ parseYieldExpression: true
             propType,
             '',
             key,
-            parsePropertyMethodFunction({ generator: false })
+            parsePropertyMethodFunction({
+                generator: false,
+                async: isAsync
+            })
         ));
     }
 
@@ -4725,6 +4877,10 @@ parseYieldExpression: true
             default:
                 return parseStatement();
             }
+        }
+
+        if (matchAsyncFuncExprOrDecl()) {
+            return parseFunctionDeclaration();
         }
 
         if (matchModuleDeclaration()) {
@@ -5256,7 +5412,8 @@ parseYieldExpression: true
             inIteration: false,
             inSwitch: false,
             lastCommentStart: -1,
-            yieldAllowed: false
+            yieldAllowed: false,
+            awaitAllowed: false
         };
 
         extra = {};
