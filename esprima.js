@@ -213,7 +213,6 @@ parseYieldExpression: true
         IllegalBreak: 'Illegal break statement',
         IllegalDuplicateClassProperty: 'Illegal duplicate property in class definition',
         IllegalReturn: 'Illegal return statement',
-        IllegalYield: 'Illegal yield expression',
         IllegalSpread: 'Illegal spread element',
         StrictModeWith:  'Strict mode code may not include a with statement',
         StrictCatchVariable:  'Catch variable may not be eval or arguments in strict mode',
@@ -2255,6 +2254,16 @@ parseYieldExpression: true
             op === '|=';
     }
 
+    // Note that 'yield' is treated as a keyword in strict mode, but as a
+    // contextual keyword (identifier) in non-strict mode, so we need to
+    // use matchKeyword and matchContextualKeyword appropriately.
+
+    function matchYield() {
+        return state.yieldAllowed && (
+            strict ? matchKeyword : matchContextualKeyword
+        )('yield');
+    }
+
     function consumeSemicolon() {
         var line, oldIndex = index, oldLineNumber = lineNumber,
             oldLineStart = lineStart, oldLookahead = lookahead;
@@ -3256,10 +3265,7 @@ parseYieldExpression: true
     function parseAssignmentExpression() {
         var marker, expr, token, params, oldParenthesizedCount;
 
-        // Note that 'yield' is treated as a keyword in strict mode, but a
-        // contextual keyword (identifier) in non-strict mode, so we need
-        // to use matchKeyword and matchContextualKeyword appropriately.
-        if ((state.yieldAllowed && matchContextualKeyword('yield')) || (strict && matchKeyword('yield'))) {
+        if (matchYield()) {
             return parseYieldExpression();
         }
 
@@ -4505,10 +4511,6 @@ parseYieldExpression: true
 
         yieldToken = lex();
         assert(yieldToken.value === 'yield', 'Called parseYieldExpression with non-yield lookahead.');
-
-        if (!state.yieldAllowed) {
-            throwErrorTolerant({}, Messages.IllegalYield);
-        }
 
         delegateFlag = false;
         if (match('*')) {
