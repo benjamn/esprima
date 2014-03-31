@@ -42,7 +42,7 @@ parseImportSpecifier: true,
 parseLeftHandSideExpression: true, parseParams: true, validateParam: true,
 parseSpreadOrAssignmentExpression: true,
 parseStatement: true, parseSourceElement: true, parseModuleBlock: true, parseConciseBody: true,
-parseYieldExpression: true
+parseYieldExpression: true, parseAwaitExpression: true
 */
 
 (function (root, factory) {
@@ -2290,9 +2290,9 @@ parseYieldExpression: true
             op === '|=';
     }
 
-    // Note that 'yield' and 'async' are treated as keywords in strict
-    // mode, but as contextual keywords (identifiers) in non-strict mode,
-    // so we need to use matchKeyword and matchContextualKeyword
+    // Note that 'yield', 'async', and 'await' are treated as keywords in
+    // strict mode, but as contextual keywords (identifiers) in non-strict
+    // mode, so we need to use matchKeyword and matchContextualKeyword
     // appropriately.
 
     function matchYield() {
@@ -2304,6 +2304,12 @@ parseYieldExpression: true
     function matchAsync() {
         return (strict ? matchKeyword : matchContextualKeyword)('async') &&
             !peekLineTerminator();
+    }
+
+    function matchAwait() {
+        return state.awaitAllowed && (
+            strict ? matchKeyword : matchContextualKeyword
+        )('await');
     }
 
     function consumeSemicolon() {
@@ -3354,6 +3360,10 @@ parseYieldExpression: true
 
         if (matchYield()) {
             return parseYieldExpression();
+        }
+
+        if (matchAwait()) {
+            return parseAwaitExpression();
         }
 
         oldParenthesizedCount = state.parenthesizedCount;
@@ -4654,7 +4664,11 @@ parseYieldExpression: true
         var yieldToken, delegateFlag, expr, marker = markerCreate();
 
         yieldToken = lex();
-        assert(yieldToken.value === 'yield', 'Called parseYieldExpression with non-yield lookahead.');
+        assert(
+            yieldToken.value === 'yield',
+            'Called parseYieldExpression with non-yield lookahead: ' +
+                yieldToken.value
+        );
 
         delegateFlag = false;
         if (match('*')) {
@@ -4665,6 +4679,27 @@ parseYieldExpression: true
         expr = parseAssignmentExpression();
 
         return markerApply(marker, delegate.createYieldExpression(expr, delegateFlag));
+    }
+
+    function parseAwaitExpression() {
+        var awaitToken, allFlag, expr, marker = markerCreate();
+
+        awaitToken = lex();
+        assert(
+            awaitToken.value === 'await',
+            'Called parseAwaitExpression with non-await lookahead: ' +
+                awaitToken.value
+        );
+
+        allFlag = false;
+        if (match('*')) {
+            lex();
+            allFlag = true;
+        }
+
+        expr = parseAssignmentExpression();
+
+        return markerApply(marker, delegate.createAwaitExpression(expr, allFlag));
     }
 
     // 14 Classes
