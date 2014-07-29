@@ -1,5 +1,4 @@
 /*
-  Copyright (C) 2013 Mathias Bynens <mathias@qiwi.be>
   Copyright (C) 2012 Ariya Hidayat <ariya.hidayat@gmail.com>
   Copyright (C) 2012 Joost-Wim Boekesteijn <joost-wim@boekesteijn.nl>
   Copyright (C) 2012 Yusuke Suzuki <utatane.tea@gmail.com>
@@ -45,16 +44,16 @@ var testFixture = {
                         end: { line: 1, column: 4 }
                     }
                 },
-                range: [0, 5],
+                range: [0, 4],
                 loc: {
                     start: { line: 1, column: 0 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 4 }
                 }
             }],
-            range: [0, 5],
+            range: [0, 4],
             loc: {
                 start: { line: 1, column: 0 },
-                end: { line: 2, column: 0 }
+                end: { line: 1, column: 4 }
             },
             tokens: [{
                 type: 'Keyword',
@@ -81,16 +80,16 @@ var testFixture = {
                         end: { line: 1, column: 4 }
                     }
                 },
-                range: [0, 5],
+                range: [0, 4],
                 loc: {
                     start: { line: 1, column: 0 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 4 }
                 }
             }],
-            range: [0, 5],
+            range: [0, 4],
             loc: {
                 start: { line: 1, column: 0 },
-                end: { line: 2, column: 0 }
+                end: { line: 1, column: 4 }
             },
             tokens: [{
                 type: 'Null',
@@ -117,16 +116,16 @@ var testFixture = {
                         end: { line: 2, column: 6 }
                     }
                 },
-                range: [5, 9],
+                range: [5, 7],
                 loc: {
                     start: { line: 2, column: 4 },
-                    end: { line: 4, column: 0 }
+                    end: { line: 2, column: 6 }
                 }
             }],
-            range: [5, 9],
+            range: [5, 7],
             loc: {
                 start: { line: 2, column: 4 },
-                end: { line: 4, column: 0 }
+                end: { line: 2, column: 6 }
             },
             tokens: [{
                 type: 'Numeric',
@@ -695,6 +694,60 @@ var testFixture = {
             }
         },
 
+        'x = [ "finally", "for" ]': {
+            type: 'ExpressionStatement',
+            expression: {
+                type: 'AssignmentExpression',
+                operator: '=',
+                left: {
+                    type: 'Identifier',
+                    name: 'x',
+                    range: [0, 1],
+                    loc: {
+                        start: { line: 1, column: 0 },
+                        end: { line: 1, column: 1 }
+                    }
+                },
+                right: {
+                    type: 'ArrayExpression',
+                    elements: [{
+                        type: 'Literal',
+                        value: 'finally',
+                        raw: '"finally"',
+                        range: [6, 15],
+                        loc: {
+                            start: { line: 1, column: 6 },
+                            end: { line: 1, column: 15 }
+                        }
+                    }, {
+                        type: 'Literal',
+                        value: 'for',
+                        raw: '"for"',
+                        range: [17, 22],
+                        loc: {
+                            start: { line: 1, column: 17 },
+                            end: { line: 1, column: 22 }
+                        }
+                    }],
+                    range: [4, 24],
+                    loc: {
+                        start: { line: 1, column: 4 },
+                        end: { line: 1, column: 24 }
+                    }
+                },
+                range: [0, 24],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 24 }
+                }
+            },
+            range: [0, 24],
+            loc: {
+                start: { line: 1, column: 0 },
+                end: { line: 1, column: 24 }
+            }
+        },
+
         '日本語 = []': {
             type: 'ExpressionStatement',
             expression: {
@@ -909,8 +962,79 @@ var testFixture = {
                 start: { line: 1, column: 0 },
                 end: { line: 1, column: 7 }
             }
-        }
+        },
 
+        '[",", "second"]': {
+            type: 'ExpressionStatement',
+            expression: {
+                type: 'ArrayExpression',
+                elements: [{
+                    type: 'Literal',
+                    value: ',',
+                    raw: '","',
+                    range: [1, 4],
+                    loc: {
+                        start: { line: 1, column: 1 },
+                        end: { line: 1, column: 4 }
+                    }
+                }, {
+                    type: 'Literal',
+                    value: 'second',
+                    raw: '"second"',
+                    range: [6, 14],
+                    loc: {
+                        start: { line: 1, column: 6 },
+                        end: { line: 1, column: 14 }
+                    }
+                }],
+                range: [0, 15],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 15 }
+                }
+            },
+            range: [0, 15],
+            loc: {
+                start: { line: 1, column: 0 },
+                end: { line: 1, column: 15 }
+            }
+        },
+
+        '["notAToken", "if"]': {
+            type: 'ExpressionStatement',
+            expression: {
+                type: 'ArrayExpression',
+                elements: [{
+                    type: 'Literal',
+                    value: 'notAToken',
+                    raw: '"notAToken"',
+                    range: [1, 12],
+                    loc: {
+                        start: { line: 1, column: 1 },
+                        end: { line: 1, column: 12 }
+                    }
+                }, {
+                    type: 'Literal',
+                    value: 'if',
+                    raw: '"if"',
+                    range: [14, 18],
+                    loc: {
+                        start: { line: 1, column: 14 },
+                        end: { line: 1, column: 18 }
+                    }
+                }],
+                range: [0, 19],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 19 }
+                }
+            },
+            range: [0, 19],
+            loc: {
+                start: { line: 1, column: 0 },
+                end: { line: 1, column: 19 }
+            }
+        }
     },
 
     'Object Initializer': {
@@ -1025,6 +1149,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 16],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1088,6 +1215,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 12],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1151,6 +1281,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 14],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1214,6 +1347,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 15],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1277,6 +1413,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 14],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1341,6 +1480,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 18],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1405,6 +1547,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [6, 10],
                             loc: {
                                 start: { line: 1, column: 6 },
@@ -1433,6 +1578,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [12, 16],
                             loc: {
                                 start: { line: 1, column: 12 },
@@ -1526,6 +1674,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 36],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1602,6 +1753,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 20],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1678,6 +1832,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 17],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1754,6 +1911,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 19],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1830,6 +1990,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 20],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1906,6 +2069,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 19],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -1983,6 +2149,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 22],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2060,6 +2229,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 17],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2178,6 +2350,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 34],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2296,6 +2471,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 28],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2414,6 +2592,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 32],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2532,6 +2713,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 34],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2650,6 +2834,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 32],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2769,6 +2956,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 34],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2888,6 +3078,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 30],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -2951,6 +3144,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 13],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -3014,6 +3210,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 13],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -3077,6 +3276,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 18],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -3141,6 +3343,9 @@ var testFixture = {
                             }
                         },
                         kind: 'init',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [5, 19],
                         loc: {
                             start: { line: 1, column: 5 },
@@ -3233,6 +3438,9 @@ var testFixture = {
                             }
                         },
                         kind: 'get',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [6, 36],
                         loc: {
                             start: { line: 1, column: 6 },
@@ -3315,6 +3523,9 @@ var testFixture = {
                             }
                         },
                         kind: 'set',
+                        method: false,
+                        shorthand: false,
+                        computed: false,
                         range: [38, 75],
                         loc: {
                             start: { line: 1, column: 38 },
@@ -3362,644 +3573,6 @@ var testFixture = {
                 start: { line: 1, column: 20 },
                 end: { line: 1, column: 22 }
             }
-        },
-
-        '42 /* block comment 1 */ /* block comment 2 */': {
-            "type": "Program",
-            "body": [
-                {
-                    "type": "ExpressionStatement",
-                    "expression": {
-                        "type": "Literal",
-                        "value": 42,
-                        "raw": "42",
-                        "range": [
-                            0,
-                            2
-                        ],
-                        "trailingComments": [
-                            {
-                                "type": "Block",
-                                "value": " block comment 1 ",
-                                "range": [
-                                    3,
-                                    24
-                                ]
-                            },
-                            {
-                                "type": "Block",
-                                "value": " block comment 2 ",
-                                "range": [
-                                    25,
-                                    46
-                                ]
-                            }
-                        ]
-                    },
-                    "range": [
-                        0,
-                        46
-                    ]
-                }
-            ],
-            "range": [
-                0,
-                46
-            ],
-            "comments": [
-                {
-                    "type": "Block",
-                    "value": " block comment 1 ",
-                    "range": [
-                        3,
-                        24
-                    ]
-                },
-                {
-                    "type": "Block",
-                    "value": " block comment 2 ",
-                    "range": [
-                        25,
-                        46
-                    ]
-                }
-            ],
-            "tokens": [
-                {
-                    "type": "Numeric",
-                    "range": [
-                        0,
-                        2
-                    ],
-                    "value": "42"
-                }
-            ]
-        },
-
-        'var p1;/* block comment 1 */ /* block comment 2 */': {
-            "range": [
-                0,
-                7
-            ],
-            "loc": {
-                "start": {
-                    "line": 1,
-                    "column": 0
-                },
-                "end": {
-                    "line": 1,
-                    "column": 7
-                }
-            },
-            "type": "Program",
-            "body": [
-                {
-                    "range": [
-                        0,
-                        7
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 7
-                        }
-                    },
-                    "type": "VariableDeclaration",
-                    "declarations": [
-                        {
-                            "range": [
-                                4,
-                                6
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 4
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 6
-                                }
-                            },
-                            "type": "VariableDeclarator",
-                            "id": {
-                                "range": [
-                                    4,
-                                    6
-                                ],
-                                "loc": {
-                                    "start": {
-                                        "line": 1,
-                                        "column": 4
-                                    },
-                                    "end": {
-                                        "line": 1,
-                                        "column": 6
-                                    }
-                                },
-                                "type": "Identifier",
-                                "name": "p1"
-                            },
-                            "init": null
-                        }
-                    ],
-                    "kind": "var",
-                    "trailingComments": [
-                        {
-                            "range": [
-                                7,
-                                28
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 7
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 28
-                                }
-                            },
-                            "type": "Block",
-                            "value": " block comment 1 "
-                        },
-                        {
-                            "range": [
-                                29,
-                                50
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 29
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 50
-                                }
-                            },
-                            "type": "Block",
-                            "value": " block comment 2 "
-                        }
-                    ]
-                }
-            ],
-            "comments": [
-                {
-                    "range": [
-                        7,
-                        28
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 7
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 28
-                        }
-                    },
-                    "type": "Block",
-                    "value": " block comment 1 "
-                },
-                {
-                    "range": [
-                        29,
-                        50
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 29
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 50
-                        }
-                    },
-                    "type": "Block",
-                    "value": " block comment 2 "
-                }
-            ],
-            "tokens": [
-                {
-                    "range": [
-                        0,
-                        3
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 3
-                        }
-                    },
-                    "type": "Keyword",
-                    "value": "var"
-                },
-                {
-                    "range": [
-                        4,
-                        6
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 4
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 6
-                        }
-                    },
-                    "type": "Identifier",
-                    "value": "p1"
-                },
-                {
-                    "range": [
-                        6,
-                        7
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 6
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 7
-                        }
-                    },
-                    "type": "Punctuator",
-                    "value": ";"
-                }
-            ]
-        },
-
-        '/*42*/': {
-            "range": [
-                6,
-                6
-            ],
-            "loc": {
-                "start": {
-                    "line": 1,
-                    "column": 6
-                },
-                "end": {
-                    "line": 1,
-                    "column": 6
-                }
-            },
-            "type": "Program",
-            "body": [],
-            "leadingComments": [
-                {
-                    "range": [
-                        0,
-                        6
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 6
-                        }
-                    },
-                    "type": "Block",
-                    "value": "42"
-                }
-            ],
-            "comments": [
-                {
-                    "range": [
-                        0,
-                        6
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 6
-                        }
-                    },
-                    "type": "Block",
-                    "value": "42"
-                }
-            ],
-            "tokens": []
-        },
-
-        '(a + /* assignmenr */b ) * c': {
-            "type": "Program",
-            "body": [
-                {
-                    "type": "ExpressionStatement",
-                    "expression": {
-                        "type": "BinaryExpression",
-                        "operator": "*",
-                        "left": {
-                            "type": "BinaryExpression",
-                            "operator": "+",
-                            "left": {
-                                "type": "Identifier",
-                                "name": "a",
-                                "range": [
-                                    1,
-                                    2
-                                ],
-                                "loc": {
-                                    "start": {
-                                        "line": 1,
-                                        "column": 1
-                                    },
-                                    "end": {
-                                        "line": 1,
-                                        "column": 2
-                                    }
-                                }
-                            },
-                            "right": {
-                                "type": "Identifier",
-                                "name": "b",
-                                "range": [
-                                    21,
-                                    22
-                                ],
-                                "loc": {
-                                    "start": {
-                                        "line": 1,
-                                        "column": 21
-                                    },
-                                    "end": {
-                                        "line": 1,
-                                        "column": 22
-                                    }
-                                },
-                                "leadingComments": [
-                                    {
-                                        "type": "Block",
-                                        "value": " assignmenr ",
-                                        "range": [
-                                            5,
-                                            21
-                                        ],
-                                        "loc": {
-                                            "start": {
-                                                "line": 1,
-                                                "column": 5
-                                            },
-                                            "end": {
-                                                "line": 1,
-                                                "column": 21
-                                            }
-                                        }
-                                    }
-                                ]
-                            },
-                            "range": [
-                                1,
-                                22
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 1
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 22
-                                }
-                            }
-                        },
-                        "right": {
-                            "type": "Identifier",
-                            "name": "c",
-                            "range": [
-                                27,
-                                28
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 27
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 28
-                                }
-                            }
-                        },
-                        "range": [
-                            0,
-                            28
-                        ],
-                        "loc": {
-                            "start": {
-                                "line": 1,
-                                "column": 0
-                            },
-                            "end": {
-                                "line": 1,
-                                "column": 28
-                            }
-                        }
-                    },
-                    "range": [
-                        0,
-                        28
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 28
-                        }
-                    }
-                }
-            ],
-            "range": [
-                0,
-                28
-            ],
-            "loc": {
-                "start": {
-                    "line": 1,
-                    "column": 0
-                },
-                "end": {
-                    "line": 1,
-                    "column": 28
-                }
-            },
-            "comments": [
-                {
-                    "type": "Block",
-                    "value": " assignmenr ",
-                    "range": [
-                        5,
-                        21
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 5
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 21
-                        }
-                    }
-                }
-            ]
-        },
-
-        '/* assignmenr */\n a = b': {
-            "type": "Program",
-            "body": [
-                {
-                    "type": "ExpressionStatement",
-                    "expression": {
-                        "type": "AssignmentExpression",
-                        "operator": "=",
-                        "left": {
-                            "type": "Identifier",
-                            "name": "a",
-                            "range": [
-                                18,
-                                19
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 2,
-                                    "column": 1
-                                },
-                                "end": {
-                                    "line": 2,
-                                    "column": 2
-                                }
-                            }
-                        },
-                        "right": {
-                            "type": "Identifier",
-                            "name": "b",
-                            "range": [
-                                22,
-                                23
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 2,
-                                    "column": 5
-                                },
-                                "end": {
-                                    "line": 2,
-                                    "column": 6
-                                }
-                            }
-                        },
-                        "range": [
-                            18,
-                            23
-                        ],
-                        "loc": {
-                            "start": {
-                                "line": 2,
-                                "column": 1
-                            },
-                            "end": {
-                                "line": 2,
-                                "column": 6
-                            }
-                        }
-                    },
-                    "range": [
-                        18,
-                        23
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 2,
-                            "column": 1
-                        },
-                        "end": {
-                            "line": 2,
-                            "column": 6
-                        }
-                    },
-                    "leadingComments": [
-                        {
-                            "type": "Block",
-                            "value": " assignmenr ",
-                            "range": [
-                                0,
-                                16
-                            ],
-                            "loc": {
-                                "start": {
-                                    "line": 1,
-                                    "column": 0
-                                },
-                                "end": {
-                                    "line": 1,
-                                    "column": 16
-                                }
-                            }
-                        }
-                    ]
-                }
-            ],
-            "range": [
-                18,
-                23
-            ],
-            "loc": {
-                "start": {
-                    "line": 2,
-                    "column": 1
-                },
-                "end": {
-                    "line": 2,
-                    "column": 6
-                }
-            },
-            "comments": [
-                {
-                    "type": "Block",
-                    "value": " assignmenr ",
-                    "range": [
-                        0,
-                        16
-                    ],
-                    "loc": {
-                        "start": {
-                            "line": 1,
-                            "column": 0
-                        },
-                        "end": {
-                            "line": 1,
-                            "column": 16
-                        }
-                    }
-                }
-            ]
         },
 
         '42 /*The*/ /*Answer*/': {
@@ -4162,16 +3735,7 @@ var testFixture = {
                 loc: {
                     start: { line: 2, column: 4 },
                     end: { line: 2, column: 6 }
-                },
-                leadingComments: [{
-                    type: 'Block',
-                    value: 'a\r\nb',
-                    range: [0, 8],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 2, column: 3 }
-                    }
-                }]
+                }
             }],
             range: [9, 11],
             loc: {
@@ -4243,16 +3807,7 @@ var testFixture = {
                 loc: {
                     start: { line: 2, column: 4 },
                     end: { line: 2, column: 6 }
-                },
-                leadingComments: [{
-                    type: 'Block',
-                    value: 'a\nb',
-                    range: [0, 7],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 2, column: 3 }
-                    }
-                }]
+                }
             }],
             range: [8, 10],
             loc: {
@@ -4278,28 +3833,16 @@ var testFixture = {
                     type: 'Literal',
                     value: 42,
                     raw: '42',
-                    range: [8, 10],
                     loc: {
                         start: { line: 2, column: 4 },
                         end: { line: 2, column: 6 }
                     }
                 },
-                range: [8, 10],
                 loc: {
                     start: { line: 2, column: 4 },
                     end: { line: 2, column: 6 }
-                },
-                leadingComments: [{
-                    type: 'Block',
-                    value: 'a\nc',
-                    range: [0, 7],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 2, column: 3 }
-                    }
-                }]
+                }
             }],
-            range: [8, 10],
             loc: {
                 start: { line: 2, column: 4 },
                 end: { line: 2, column: 6 }
@@ -4307,38 +3850,9 @@ var testFixture = {
             comments: [{
                 type: 'Block',
                 value: 'a\nc',
-                range: [0, 7],
                 loc: {
                     start: { line: 1, column: 0 },
                     end: { line: 2, column: 3 }
-                }
-            }]
-        },
-
-        '// one\\n': {
-            type: 'Program',
-            body: [],
-            range: [8, 8],
-            loc: {
-                start: { line: 1, column: 8 },
-                end: { line: 1, column: 8 }
-            },
-            leadingComments: [{
-                type: 'Line',
-                value: ' one\\n',
-                range: [0, 8],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 8 }
-                }
-            }],
-            comments: [{
-                type: 'Line',
-                value: ' one\\n',
-                range: [0, 8],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 8 }
                 }
             }]
         },
@@ -4374,16 +3888,7 @@ var testFixture = {
                     loc: {
                         start: { line: 1, column: 0 },
                         end: { line: 1, column: 2 }
-                    },
-                    trailingComments: [{
-                        type: 'Line',
-                        value: ' line comment',
-                        range: [3, 18],
-                        loc: {
-                            start: { line: 1, column: 3 },
-                            end: { line: 1, column: 18 }
-                        }
-                    }]
+                    }
                 },
                 range: [0, 18],
                 loc: {
@@ -4425,16 +3930,7 @@ var testFixture = {
                 loc: {
                     start: { line: 2, column: 0 },
                     end: { line: 2, column: 2 }
-                },
-                leadingComments: [{
-                    type: 'Line',
-                    value: ' Hello, world!',
-                    range: [0, 16],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 16 }
-                    }
-                }]
+                }
             }],
             range: [17, 19],
             loc: {
@@ -4506,16 +4002,7 @@ var testFixture = {
                 loc: {
                     start: { line: 2, column: 0 },
                     end: { line: 2, column: 2 }
-                },
-                leadingComments: [{
-                    type: 'Line',
-                    value: '',
-                    range: [0, 2],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 2 }
-                    }
-                }]
+                }
             }],
             range: [3, 5],
             loc: {
@@ -4581,16 +4068,7 @@ var testFixture = {
                 loc: {
                     start: { line: 1, column: 4 },
                     end: { line: 1, column: 6 }
-                },
-                leadingComments: [{
-                    type: 'Block',
-                    value: '',
-                    range: [0, 4],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 4 }
-                    }
-                }]
+                }
             }],
             range: [4, 6],
             loc: {
@@ -4604,51 +4082,6 @@ var testFixture = {
                 loc: {
                     start: { line: 1, column: 0 },
                     end: { line: 1, column: 4 }
-                }
-            }]
-        },
-
-        '42/**/': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [0, 2],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 2 }
-                    },
-                    trailingComments: [{
-                        type: 'Block',
-                        value: '',
-                        range: [2, 6],
-                        loc: {
-                            start: { line: 1, column: 2 },
-                            end: { line: 1, column: 6 }
-                        }
-                    }]
-                },
-                range: [0, 6],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 6 }
-                }
-            }],
-            range: [0, 6],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 6 }
-            },
-            comments: [{
-                type: 'Block',
-                value: '',
-                range: [2, 6],
-                loc: {
-                    start: { line: 1, column: 2 },
-                    end: { line: 1, column: 6 }
                 }
             }]
         },
@@ -4671,24 +4104,7 @@ var testFixture = {
                 loc: {
                     start: { line: 4, column: 0 },
                     end: { line: 4, column: 2 }
-                },
-                leadingComments: [{
-                    type: 'Line',
-                    value: ' Hello, world!',
-                    range: [0, 16],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 16 }
-                    }
-                }, {
-                    type: 'Line',
-                    value: '   Another hello',
-                    range: [18, 36],
-                    loc: {
-                        start: { line: 3, column: 0 },
-                        end: { line: 3, column: 18 }
-                    }
-                }]
+                }
             }],
             range: [37, 39],
             loc: {
@@ -4710,85 +4126,6 @@ var testFixture = {
                 loc: {
                     start: { line: 3, column: 0 },
                     end: { line: 3, column: 18 }
-                }
-            }]
-        },
-
-        'if (x) { doThat() // Some comment\n }': {
-            type: 'Program',
-            body: [{
-                type: 'IfStatement',
-                test: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [4, 5],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 5 }
-                    }
-                },
-                consequent: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'Identifier',
-                                name: 'doThat',
-                                range: [9, 15],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 15 }
-                                }
-                            },
-                            'arguments': [],
-                            range: [9, 17],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 17 }
-                            },
-                            trailingComments: [{
-                                type: 'Line',
-                                value: ' Some comment',
-                                range: [18, 33],
-                                loc: {
-                                    start: { line: 1, column: 18 },
-                                    end: { line: 1, column: 33 }
-                                }
-                            }]
-                        },
-                        range: [9, 35],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 2, column: 1 }
-                        }
-                    }],
-                    range: [7, 36],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 2, column: 2 }
-                    }
-                },
-                alternate: null,
-                range: [0, 36],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 2, column: 2 }
-                }
-            }],
-            range: [0, 36],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 2, column: 2 }
-            },
-            comments: [{
-                type: 'Line',
-                value: ' Some comment',
-                range: [18, 33],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 33 }
                 }
             }]
         },
@@ -4832,16 +4169,7 @@ var testFixture = {
                         loc: {
                             start: { line: 2, column: 0 },
                             end: { line: 2, column: 9 }
-                        },
-                        leadingComments: [{
-                            type: 'Line',
-                            value: ' Some comment',
-                            range: [9, 24],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 24 }
-                            }
-                        }]
+                        }
                     }],
                     range: [7, 36],
                     loc: {
@@ -4868,164 +4196,6 @@ var testFixture = {
                 loc: {
                     start: { line: 1, column: 9 },
                     end: { line: 1, column: 24 }
-                }
-            }]
-        },
-
-        'if (x) { /* Some comment */ doThat() }': {
-            type: 'Program',
-            body: [{
-                type: 'IfStatement',
-                test: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [4, 5],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 5 }
-                    }
-                },
-                consequent: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'Identifier',
-                                name: 'doThat',
-                                range: [28, 34],
-                                loc: {
-                                    start: { line: 1, column: 28 },
-                                    end: { line: 1, column: 34 }
-                                }
-                            },
-                            'arguments': [],
-                            range: [28, 36],
-                            loc: {
-                                start: { line: 1, column: 28 },
-                                end: { line: 1, column: 36 }
-                            }
-                        },
-                        range: [28, 37],
-                        loc: {
-                            start: { line: 1, column: 28 },
-                            end: { line: 1, column: 37 }
-                        },
-                        leadingComments: [{
-                            type: 'Block',
-                            value: ' Some comment ',
-                            range: [9, 27],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 27 }
-                            }
-                        }]
-                    }],
-                    range: [7, 38],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 38 }
-                    }
-                },
-                alternate: null,
-                range: [0, 38],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 38 }
-                }
-            }],
-            range: [0, 38],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 38 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' Some comment ',
-                range: [9, 27],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 27 }
-                }
-            }]
-        },
-
-        'if (x) { doThat() /* Some comment */ }': {
-            type: 'Program',
-            body: [{
-                type: 'IfStatement',
-                test: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [4, 5],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 5 }
-                    }
-                },
-                consequent: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'Identifier',
-                                name: 'doThat',
-                                range: [9, 15],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 15 }
-                                }
-                            },
-                            'arguments': [],
-                            range: [9, 17],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 17 }
-                            },
-                            trailingComments: [{
-                                type: 'Block',
-                                value: ' Some comment ',
-                                range: [18, 36],
-                                loc: {
-                                    start: { line: 1, column: 18 },
-                                    end: { line: 1, column: 36 }
-                                }
-                            }]
-                        },
-                        range: [9, 37],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 37 }
-                        }
-                    }],
-                    range: [7, 38],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 38 }
-                    }
-                },
-                alternate: null,
-                range: [0, 38],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 38 }
-                }
-            }],
-            range: [0, 38],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 38 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' Some comment ',
-                range: [18, 36],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 36 }
                 }
             }]
         },
@@ -5079,16 +4249,7 @@ var testFixture = {
                         loc: {
                             start: { line: 1, column: 41 },
                             end: { line: 1, column: 49 }
-                        },
-                        leadingComments: [{
-                            type: 'Block',
-                            value: ' perfect ',
-                            range: [27, 40],
-                            loc: {
-                                start: { line: 1, column: 27 },
-                                end: { line: 1, column: 40 }
-                            }
-                        }]
+                        }
                     }],
                     range: [18, 49],
                     loc: {
@@ -5116,798 +4277,8 @@ var testFixture = {
                     end: { line: 1, column: 40 }
                 }
             }]
-        },
-
-        'switch (answer) { case 42: bingo() /* perfect */ }': {
-            type: 'Program',
-            body: [{
-                type: 'SwitchStatement',
-                discriminant: {
-                    type: 'Identifier',
-                    name: 'answer',
-                    range: [8, 14],
-                    loc: {
-                        start: { line: 1, column: 8 },
-                        end: { line: 1, column: 14 }
-                    }
-                },
-                cases: [{
-                    type: 'SwitchCase',
-                    test: {
-                        type: 'Literal',
-                        value: 42,
-                        raw: '42',
-                        range: [23, 25],
-                        loc: {
-                            start: { line: 1, column: 23 },
-                            end: { line: 1, column: 25 }
-                        }
-                    },
-                    consequent: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'CallExpression',
-                            callee: {
-                                type: 'Identifier',
-                                name: 'bingo',
-                                range: [27, 32],
-                                loc: {
-                                    start: { line: 1, column: 27 },
-                                    end: { line: 1, column: 32 }
-                                }
-                            },
-                            'arguments': [],
-                            range: [27, 34],
-                            loc: {
-                                start: { line: 1, column: 27 },
-                                end: { line: 1, column: 34 }
-                            },
-                            trailingComments: [{
-                                type: 'Block',
-                                value: ' perfect ',
-                                range: [35, 48],
-                                loc: {
-                                    start: { line: 1, column: 35 },
-                                    end: { line: 1, column: 48 }
-                                }
-                            }]
-                        },
-                        range: [27, 49],
-                        loc: {
-                            start: { line: 1, column: 27 },
-                            end: { line: 1, column: 49 }
-                        }
-                    }],
-                    range: [18, 49],
-                    loc: {
-                        start: { line: 1, column: 18 },
-                        end: { line: 1, column: 49 }
-                    }
-                }],
-                range: [0, 50],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 50 }
-                }
-            }],
-            range: [0, 50],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 50 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' perfect ',
-                range: [35, 48],
-                loc: {
-                    start: { line: 1, column: 35 },
-                    end: { line: 1, column: 48 }
-                }
-            }]
-        },
-
-        '/* header */ (function(){ var version = 1; }).call(this)': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'CallExpression',
-                    callee: {
-                        type: 'MemberExpression',
-                        computed: false,
-                        object: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [],
-                            defaults: [],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [{
-                                    type: 'VariableDeclaration',
-                                    declarations: [{
-                                        type: 'VariableDeclarator',
-                                        id: {
-                                            type: 'Identifier',
-                                            name: 'version',
-                                            range: [30, 37],
-                                            loc: {
-                                                start: { line: 1, column: 30 },
-                                                end: { line: 1, column: 37 }
-                                            }
-                                        },
-                                        init: {
-                                            type: 'Literal',
-                                            value: 1,
-                                            raw: '1',
-                                            range: [40, 41],
-                                            loc: {
-                                                start: { line: 1, column: 40 },
-                                                end: { line: 1, column: 41 }
-                                            }
-                                        },
-                                        range: [30, 41],
-                                        loc: {
-                                            start: { line: 1, column: 30 },
-                                            end: { line: 1, column: 41 }
-                                        }
-                                    }],
-                                    kind: 'var',
-                                    range: [26, 42],
-                                    loc: {
-                                        start: { line: 1, column: 26 },
-                                        end: { line: 1, column: 42 }
-                                    }
-                                }],
-                                range: [24, 44],
-                                loc: {
-                                    start: { line: 1, column: 24 },
-                                    end: { line: 1, column: 44 }
-                                }
-                            },
-                            rest: null,
-                            generator: false,
-                            expression: false,
-                            range: [14, 44],
-                            loc: {
-                                start: { line: 1, column: 14 },
-                                end: { line: 1, column: 44 }
-                            }
-                        },
-                        property: {
-                            type: 'Identifier',
-                            name: 'call',
-                            range: [46, 50],
-                            loc: {
-                                start: { line: 1, column: 46 },
-                                end: { line: 1, column: 50 }
-                            }
-                        },
-                        range: [13, 50],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 50 }
-                        }
-                    },
-                    'arguments': [{
-                        type: 'ThisExpression',
-                        range: [51, 55],
-                        loc: {
-                            start: { line: 1, column: 51 },
-                            end: { line: 1, column: 55 }
-                        }
-                    }],
-                    range: [13, 56],
-                    loc: {
-                        start: { line: 1, column: 13 },
-                        end: { line: 1, column: 56 }
-                    }
-                },
-                range: [13, 56],
-                loc: {
-                    start: { line: 1, column: 13 },
-                    end: { line: 1, column: 56 }
-                },
-                leadingComments: [{
-                    type: 'Block',
-                    value: ' header ',
-                    range: [0, 12],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 12 }
-                    }
-                }]
-            }],
-            range: [13, 56],
-            loc: {
-                start: { line: 1, column: 13 },
-                end: { line: 1, column: 56 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' header ',
-                range: [0, 12],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 12 }
-                }
-            }]
-        },
-
-        '(function(){ var version = 1; /* sync */ }).call(this)': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'CallExpression',
-                    callee: {
-                        type: 'MemberExpression',
-                        computed: false,
-                        object: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [],
-                            defaults: [],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [{
-                                    type: 'VariableDeclaration',
-                                    declarations: [{
-                                        type: 'VariableDeclarator',
-                                        id: {
-                                            type: 'Identifier',
-                                            name: 'version',
-                                            range: [17, 24],
-                                            loc: {
-                                                start: { line: 1, column: 17 },
-                                                end: { line: 1, column: 24 }
-                                            }
-                                        },
-                                        init: {
-                                            type: 'Literal',
-                                            value: 1,
-                                            raw: '1',
-                                            range: [27, 28],
-                                            loc: {
-                                                start: { line: 1, column: 27 },
-                                                end: { line: 1, column: 28 }
-                                            }
-                                        },
-                                        range: [17, 28],
-                                        loc: {
-                                            start: { line: 1, column: 17 },
-                                            end: { line: 1, column: 28 }
-                                        }
-                                    }],
-                                    kind: 'var',
-                                    range: [13, 29],
-                                    loc: {
-                                        start: { line: 1, column: 13 },
-                                        end: { line: 1, column: 29 }
-                                    },
-                                    trailingComments: [{
-                                        type: 'Block',
-                                        value: ' sync ',
-                                        range: [30, 40],
-                                        loc: {
-                                            start: { line: 1, column: 30 },
-                                            end: { line: 1, column: 40 }
-                                        }
-                                    }]
-                                }],
-                                range: [11, 42],
-                                loc: {
-                                    start: { line: 1, column: 11 },
-                                    end: { line: 1, column: 42 }
-                                }
-                            },
-                            rest: null,
-                            generator: false,
-                            expression: false,
-                            range: [1, 42],
-                            loc: {
-                                start: { line: 1, column: 1 },
-                                end: { line: 1, column: 42 }
-                            }
-                        },
-                        property: {
-                            type: 'Identifier',
-                            name: 'call',
-                            range: [44, 48],
-                            loc: {
-                                start: { line: 1, column: 44 },
-                                end: { line: 1, column: 48 }
-                            },
-                            leadingComments: [{
-                                type: 'Block',
-                                value: ' sync ',
-                                range: [30, 40],
-                                loc: {
-                                    start: { line: 1, column: 30 },
-                                    end: { line: 1, column: 40 }
-                                }
-                            }]
-                        },
-                        range: [0, 48],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 48 }
-                        }
-                    },
-                    'arguments': [{
-                        type: 'ThisExpression',
-                        range: [49, 53],
-                        loc: {
-                            start: { line: 1, column: 49 },
-                            end: { line: 1, column: 53 }
-                        }
-                    }],
-                    range: [0, 54],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 54 }
-                    }
-                },
-                range: [0, 54],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 54 }
-                }
-            }],
-            range: [0, 54],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 54 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' sync ',
-                range: [30, 40],
-                loc: {
-                    start: { line: 1, column: 30 },
-                    end: { line: 1, column: 40 }
-                }
-            }]
-        },
-
-        'function f() { /* infinite */ while (true) { } /* bar */ var each; }': {
-            type: 'Program',
-            body: [{
-                type: 'FunctionDeclaration',
-                id: {
-                    type: 'Identifier',
-                    name: 'f',
-                    range: [9, 10],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 10 }
-                    }
-                },
-                params: [],
-                defaults: [],
-                body: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'WhileStatement',
-                        test: {
-                            type: 'Literal',
-                            value: true,
-                            raw: 'true',
-                            range: [37, 41],
-                            loc: {
-                                start: { line: 1, column: 37 },
-                                end: { line: 1, column: 41 }
-                            }
-                        },
-                        body: {
-                            type: 'BlockStatement',
-                            body: [],
-                            range: [43, 46],
-                            loc: {
-                                start: { line: 1, column: 43 },
-                                end: { line: 1, column: 46 }
-                            }
-                        },
-                        range: [30, 46],
-                        loc: {
-                            start: { line: 1, column: 30 },
-                            end: { line: 1, column: 46 }
-                        },
-                        leadingComments: [{
-                            type: 'Block',
-                            value: ' infinite ',
-                            range: [15, 29],
-                            loc: {
-                                start: { line: 1, column: 15 },
-                                end: { line: 1, column: 29 }
-                            }
-                        }],
-                        trailingComments: [{
-                            type: 'Block',
-                            value: ' bar ',
-                            range: [47, 56],
-                            loc: {
-                                start: { line: 1, column: 47 },
-                                end: { line: 1, column: 56 }
-                            }
-                        }]
-                    }, {
-                        type: 'VariableDeclaration',
-                        declarations: [{
-                            type: 'VariableDeclarator',
-                            id: {
-                                type: 'Identifier',
-                                name: 'each',
-                                range: [61, 65],
-                                loc: {
-                                    start: { line: 1, column: 61 },
-                                    end: { line: 1, column: 65 }
-                                }
-                            },
-                            init: null,
-                            range: [61, 65],
-                            loc: {
-                                start: { line: 1, column: 61 },
-                                end: { line: 1, column: 65 }
-                            }
-                        }],
-                        kind: 'var',
-                        range: [57, 66],
-                        loc: {
-                            start: { line: 1, column: 57 },
-                            end: { line: 1, column: 66 }
-                        },
-                        leadingComments: [{
-                            type: 'Block',
-                            value: ' bar ',
-                            range: [47, 56],
-                            loc: {
-                                start: { line: 1, column: 47 },
-                                end: { line: 1, column: 56 }
-                            }
-                        }]
-                    }],
-                    range: [13, 68],
-                    loc: {
-                        start: { line: 1, column: 13 },
-                        end: { line: 1, column: 68 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: false,
-                range: [0, 68],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 68 }
-                }
-            }],
-            range: [0, 68],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 68 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' infinite ',
-                range: [15, 29],
-                loc: {
-                    start: { line: 1, column: 15 },
-                    end: { line: 1, column: 29 }
-                }
-            }, {
-                type: 'Block',
-                value: ' bar ',
-                range: [47, 56],
-                loc: {
-                    start: { line: 1, column: 47 },
-                    end: { line: 1, column: 56 }
-                }
-            }]
-        },
-
-        '<!-- foo': {
-            type: 'Program',
-            body: [],
-            comments: [{
-                type: 'Line',
-                value: ' foo'
-            }]
-        },
-
-        'var x = 1<!--foo': {
-            type: 'Program',
-            body: [{
-                type: 'VariableDeclaration',
-                declarations: [{
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: 'x'
-                    },
-                    init: {
-                        type: 'Literal',
-                        value: 1,
-                        raw: '1'
-                    }
-                }],
-                kind: 'var'
-            }],
-            comments: [{
-                type: 'Line',
-                value: 'foo'
-            }]
-        },
-
-        '--> comment': {
-            type: 'Program',
-            body: [],
-            range: [11, 11],
-            loc: {
-                start: { line: 1, column: 11 },
-                end: { line: 1, column: 11 }
-            },
-            comments: [{
-                type: 'Line',
-                value: ' comment',
-                range: [0, 11],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 11 }
-                }
-            }]
-        },
-
-        '<!-- comment': {
-            type: 'Program',
-            body: [],
-            range: [12, 12],
-            loc: {
-                start: { line: 1, column: 12 },
-                end: { line: 1, column: 12 }
-            },
-            comments: [{
-                type: 'Line',
-                value: ' comment',
-                range: [0, 12],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 12 }
-                }
-            }]
-        },
-
-        ' \t --> comment': {
-            type: 'Program',
-            body: [],
-            range: [14, 14],
-            loc: {
-                start: { line: 1, column: 14 },
-                end: { line: 1, column: 14 }
-            },
-            comments: [{
-                type: 'Line',
-                value: ' comment',
-                range: [3, 14],
-                loc: {
-                    start: { line: 1, column: 3 },
-                    end: { line: 1, column: 14 }
-                }
-            }]
-        },
-
-        ' \t /* block comment */  --> comment': {
-            type: 'Program',
-            body: [],
-            range: [35, 35],
-            loc: {
-                start: { line: 1, column: 35 },
-                end: { line: 1, column: 35 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' block comment ',
-                range: [3, 22],
-                loc: {
-                    start: { line: 1, column: 3 },
-                    end: { line: 1, column: 22 }
-                }
-            }, {
-                type: 'Line',
-                value: ' comment',
-                range: [24, 35],
-                loc: {
-                    start: { line: 1, column: 24 },
-                    end: { line: 1, column: 35 }
-                }
-            }]
-        },
-
-        '/* block comment */--> comment': {
-            type: 'Program',
-            body: [],
-            range: [30, 30],
-            loc: {
-                start: { line: 1, column: 30 },
-                end: { line: 1, column: 30 }
-            },
-            comments: [{
-                type: 'Block',
-                value: ' block comment ',
-                range: [0, 19],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 19 }
-                }
-            }, {
-                type: 'Line',
-                value: ' comment',
-                range: [19, 30],
-                loc: {
-                    start: { line: 1, column: 19 },
-                    end: { line: 1, column: 30 }
-                }
-            }]
-        },
-
-        '/* not comment*/; i-->0': {
-            type: 'Program',
-            body: [{
-                type: 'EmptyStatement',
-                range: [16, 17],
-                loc: {
-                    start: { line: 1, column: 16 },
-                    end: { line: 1, column: 17 }
-                }
-            }, {
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'BinaryExpression',
-                    operator: '>',
-                    left: {
-                        type: 'UpdateExpression',
-                        operator: '--',
-                        argument: {
-                            type: 'Identifier',
-                            name: 'i',
-                            range: [18, 19],
-                            loc: {
-                                start: { line: 1, column: 18 },
-                                end: { line: 1, column: 19 }
-                            }
-                        },
-                        prefix: false,
-                        range: [18, 21],
-                        loc: {
-                            start: { line: 1, column: 18 },
-                            end: { line: 1, column: 21 }
-                        }
-                    },
-                    right: {
-                        type: 'Literal',
-                        value: 0,
-                        raw: '0',
-                        range: [22, 23],
-                        loc: {
-                            start: { line: 1, column: 22 },
-                            end: { line: 1, column: 23 }
-                        }
-                    },
-                    range: [18, 23],
-                    loc: {
-                        start: { line: 1, column: 18 },
-                        end: { line: 1, column: 23 }
-                    }
-                },
-                range: [18, 23],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 23 }
-                }
-            }],
-            range: [16, 23],
-            loc: {
-                start: { line: 1, column: 16 },
-                end: { line: 1, column: 23 }
-            },
-            tokens: [{
-                type: 'Punctuator',
-                value: ';',
-                range: [16, 17],
-                loc: {
-                    start: { line: 1, column: 16 },
-                    end: { line: 1, column: 17 }
-                }
-            }, {
-                type: 'Identifier',
-                value: 'i',
-                range: [18, 19],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 19 }
-                }
-            }, {
-                type: 'Punctuator',
-                value: '--',
-                range: [19, 21],
-                loc: {
-                    start: { line: 1, column: 19 },
-                    end: { line: 1, column: 21 }
-                }
-            }, {
-                type: 'Punctuator',
-                value: '>',
-                range: [21, 22],
-                loc: {
-                    start: { line: 1, column: 21 },
-                    end: { line: 1, column: 22 }
-                }
-            }, {
-                type: 'Numeric',
-                value: '0',
-                range: [22, 23],
-                loc: {
-                    start: { line: 1, column: 22 },
-                    end: { line: 1, column: 23 }
-                }
-            }]
-
-        },
-
-        'while (i-->0) {}': {
-            type: 'WhileStatement',
-            test: {
-                type: 'BinaryExpression',
-                operator: '>',
-                left: {
-                    type: 'UpdateExpression',
-                    operator: '--',
-                    argument: {
-                        type: 'Identifier',
-                        name: 'i',
-                        range: [7, 8],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 8 }
-                        }
-                    },
-                    prefix: false,
-                    range: [7, 10],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 10 }
-                    }
-                },
-                right: {
-                    type: 'Literal',
-                    value: 0,
-                    raw: '0',
-                    range: [11, 12],
-                    loc: {
-                        start: { line: 1, column: 11 },
-                        end: { line: 1, column: 12 }
-                    }
-                },
-                range: [7, 12],
-                loc: {
-                    start: { line: 1, column: 7 },
-                    end: { line: 1, column: 12 }
-                }
-            },
-            body: {
-                type: 'BlockStatement',
-                body: [],
-                range: [14, 16],
-                loc: {
-                    start: { line: 1, column: 14 },
-                    end: { line: 1, column: 16 }
-                }
-            },
-            range: [0, 16],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 16 }
-            }
         }
+
     },
 
     'Numeric Literals': {
@@ -6471,13 +4842,13 @@ var testFixture = {
                 range: [0, 14],
                 loc: {
                     start: { line: 1, column: 0 },
-                    end: { line: 2, column: 6 }
+                    end: { line: 2, column: 14 }
                 }
             },
             range: [0, 14],
             loc: {
                 start: { line: 1, column: 0 },
-                end: { line: 2, column: 6 }
+                end: { line: 2, column: 14 }
             }
         },
 
@@ -6661,13 +5032,13 @@ var testFixture = {
                 range: [0, 15],
                 loc: {
                     start: { line: 1, column: 0 },
-                    end: { line: 2, column: 6 }
+                    end: { line: 2, column: 15 }
                 }
             },
             range: [0, 15],
             loc: {
                 start: { line: 1, column: 0 },
-                end: { line: 2, column: 6 }
+                end: { line: 2, column: 15 }
             }
         },
 
@@ -6689,48 +5060,6 @@ var testFixture = {
                 end: { line: 1, column: 14 }
             }
         }
-    },
-
-    '[ES6] Unicode Code Point Escape Sequence': {
-
-        '"\\u{714E}\\u{8336}"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'Literal',
-                value: '煎茶',
-                raw: '"\\u{714E}\\u{8336}"',
-                range: [0, 18],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 18 }
-                }
-            },
-            range: [0, 18],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 18 }
-            }
-        },
-
-        '"\\u{20BB7}\\u{91CE}\\u{5BB6}"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'Literal',
-                value: '\ud842\udfb7\u91ce\u5bb6',
-                raw: '"\\u{20BB7}\\u{91CE}\\u{5BB6}"',
-                range: [0, 27],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 27 }
-                }
-            },
-            range: [0, 27],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 27 }
-            }
-        }
-
     },
 
     'Regular Expression Literals': {
@@ -7002,84 +5331,6 @@ var testFixture = {
             }]
         },
 
-        'var x = /[\\]/]/': {
-            type: 'Program',
-            body: [{
-                type: 'VariableDeclaration',
-                declarations: [{
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        }
-                    },
-                    init: {
-                        type: 'Literal',
-                        value: new RegExp('[\\]/]').toString(),
-                        raw: '/[\\]/]/',
-                        range: [8, 15],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 15 }
-                        }
-                    },
-                    range: [4, 15],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 15 }
-                    }
-                }],
-                kind: 'var',
-                range: [0, 15],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 15 }
-                }
-            }],
-            range: [0, 15],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 15 }
-            },
-            tokens: [{
-                type: 'Keyword',
-                value: 'var',
-                range: [0, 3],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 3 }
-                }
-            }, {
-                type: 'Identifier',
-                value: 'x',
-                range: [4, 5],
-                loc: {
-                    start: { line: 1, column: 4 },
-                    end: { line: 1, column: 5 }
-                }
-            }, {
-                type: 'Punctuator',
-                value: '=',
-                range: [6, 7],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 7 }
-                }
-            }, {
-                type: 'RegularExpression',
-                value: '/[\\]/]/',
-                range: [8, 15],
-                loc: {
-                    start: { line: 1, column: 8 },
-                    end: { line: 1, column: 15 }
-                }
-            }]
-        },
-
         'var x = /foo\\/bar/': {
             type: 'Program',
             body: [{
@@ -7232,6 +5483,162 @@ var testFixture = {
                 loc: {
                     start: { line: 1, column: 8 },
                     end: { line: 1, column: 21 }
+                }
+            }]
+        },
+
+        'var x = /[P QR]/\\u0067': {
+            type: 'Program',
+            body: [{
+                type: 'VariableDeclaration',
+                declarations: [{
+                    type: 'VariableDeclarator',
+                    id: {
+                        type: 'Identifier',
+                        name: 'x',
+                        range: [4, 5],
+                        loc: {
+                            start: { line: 1, column: 4 },
+                            end: { line: 1, column: 5 }
+                        }
+                    },
+                    init: {
+                        type: 'Literal',
+                        value: '/[P QR]/g',
+                        raw: '/[P QR]/\\u0067',
+                        range: [8, 22],
+                        loc: {
+                            start: { line: 1, column: 8 },
+                            end: { line: 1, column: 22 }
+                        }
+                    },
+                    range: [4, 22],
+                    loc: {
+                        start: { line: 1, column: 4 },
+                        end: { line: 1, column: 22 }
+                    }
+                }],
+                kind: 'var',
+                range: [0, 22],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 22 }
+                }
+            }],
+            range: [0, 22],
+            loc: {
+                start: { line: 1, column: 0 },
+                end: { line: 1, column: 22 }
+            },
+            tokens: [{
+                type: 'Keyword',
+                value: 'var',
+                range: [0, 3],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 3 }
+                }
+            }, {
+                type: 'Identifier',
+                value: 'x',
+                range: [4, 5],
+                loc: {
+                    start: { line: 1, column: 4 },
+                    end: { line: 1, column: 5 }
+                }
+            }, {
+                type: 'Punctuator',
+                value: '=',
+                range: [6, 7],
+                loc: {
+                    start: { line: 1, column: 6 },
+                    end: { line: 1, column: 7 }
+                }
+            }, {
+                type: 'RegularExpression',
+                value: '/[P QR]/\\u0067',
+                range: [8, 22],
+                loc: {
+                    start: { line: 1, column: 8 },
+                    end: { line: 1, column: 22 }
+                }
+            }]
+        },
+
+        'var x = /[P QR]/\\g': {
+            type: 'Program',
+            body: [{
+                type: 'VariableDeclaration',
+                declarations: [{
+                    type: 'VariableDeclarator',
+                    id: {
+                        type: 'Identifier',
+                        name: 'x',
+                        range: [4, 5],
+                        loc: {
+                            start: { line: 1, column: 4 },
+                            end: { line: 1, column: 5 }
+                        }
+                    },
+                    init: {
+                        type: 'Literal',
+                        value: '/[P QR]/g',
+                        raw: '/[P QR]/\\g',
+                        range: [8, 18],
+                        loc: {
+                            start: { line: 1, column: 8 },
+                            end: { line: 1, column: 18 }
+                        }
+                    },
+                    range: [4, 18],
+                    loc: {
+                        start: { line: 1, column: 4 },
+                        end: { line: 1, column: 18 }
+                    }
+                }],
+                kind: 'var',
+                range: [0, 18],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 18 }
+                }
+            }],
+            range: [0, 18],
+            loc: {
+                start: { line: 1, column: 0 },
+                end: { line: 1, column: 18 }
+            },
+            tokens: [{
+                type: 'Keyword',
+                value: 'var',
+                range: [0, 3],
+                loc: {
+                    start: { line: 1, column: 0 },
+                    end: { line: 1, column: 3 }
+                }
+            }, {
+                type: 'Identifier',
+                value: 'x',
+                range: [4, 5],
+                loc: {
+                    start: { line: 1, column: 4 },
+                    end: { line: 1, column: 5 }
+                }
+            }, {
+                type: 'Punctuator',
+                value: '=',
+                range: [6, 7],
+                loc: {
+                    start: { line: 1, column: 6 },
+                    end: { line: 1, column: 7 }
+                }
+            }, {
+                type: 'RegularExpression',
+                value: '/[P QR]/\\g',
+                range: [8, 18],
+                loc: {
+                    start: { line: 1, column: 8 },
+                    end: { line: 1, column: 18 }
                 }
             }]
         },
@@ -11182,1236 +9589,6 @@ var testFixture = {
                 start: { line: 1, column: 0 },
                 end: { line: 1, column: 14 }
             }
-        },
-        'x = (0) ? 1 : 2' : {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'AssignmentExpression',
-                operator: '=',
-                left: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [ 0, 1 ],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                },
-                right: {
-                    type: 'ConditionalExpression',
-                    test: {
-                        type: 'Literal',
-                        value: 0,
-                        raw: '0',
-                        range: [ 5, 6 ],
-                        loc: { start: { line: 1, column: 5 }, end: { line: 1, column: 6 } }
-                    },
-                    consequent: {
-                        type: 'Literal',
-                        value: 1,
-                        raw: '1',
-                        range: [ 10, 11 ],
-                        loc: { start: { line: 1, column: 10 }, end: { line: 1, column: 11 } }
-                    },
-                    alternate: {
-                        type: 'Literal',
-                        value: 2,
-                        raw: '2',
-                        range: [ 14, 15 ],
-                        loc: { start: { line: 1, column: 14 }, end: { line: 1, column: 15 } }
-                    },
-                    range: [ 4, 15 ],
-                    loc: { start: { line: 1, column: 4 }, end: { line: 1, column: 15 } }
-                },
-                range: [ 0, 15 ],
-                loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } }
-            },
-            range: [ 0, 15 ],
-            loc: { start: { line: 1, column: 0 }, end: { line: 1, column: 15 } }
-        }
-    },
-
-    '[ES6] Arrow Function': {
-
-        '() => "test"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 'test',
-                    raw: '"test"',
-                    range: [6, 12],
-                    loc: {
-                        start: { line: 1, column: 6 },
-                        end: { line: 1, column: 12 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 12],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 12 }
-                }
-            },
-            range: [0, 12],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 12 }
-            }
-        },
-
-        'e => "test"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'e',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 'test',
-                    raw: '"test"',
-                    range: [5, 11],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 11 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 11],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 11 }
-                }
-            },
-            range: [0, 11],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 11 }
-            }
-        },
-
-        '(e) => "test"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'e',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 'test',
-                    raw: '"test"',
-                    range: [7, 13],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 13 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 13],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 13 }
-                }
-            },
-            range: [0, 13],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 13 }
-            }
-        },
-
-        '(a, b) => "test"': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }, {
-                    type: 'Identifier',
-                    name: 'b',
-                    range: [4, 5],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 5 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 'test',
-                    raw: '"test"',
-                    range: [10, 16],
-                    loc: {
-                        start: { line: 1, column: 10 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 16],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 16 }
-                }
-            },
-            range: [0, 16],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 16 }
-            }
-        },
-
-        'e => { 42; }': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'e',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'Literal',
-                            value: 42,
-                            raw: '42',
-                            range: [7, 9],
-                            loc: {
-                                start: { line: 1, column: 7 },
-                                end: { line: 1, column: 9 }
-                            }
-                        },
-                        range: [7, 10],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 10 }
-                        }
-                    }],
-                    range: [5, 12],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 12 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: false,
-                range: [0, 12],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 12 }
-                }
-            },
-            range: [0, 12],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 12 }
-            }
-        },
-
-        'e => ({ property: 42 })': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'e',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'ObjectExpression',
-                    properties: [{
-                        type: 'Property',
-                        key: {
-                            type: 'Identifier',
-                            name: 'property',
-                            range: [8, 16],
-                            loc: {
-                                start: { line: 1, column: 8 },
-                                end: { line: 1, column: 16 }
-                            }
-                        },
-                        value: {
-                            type: 'Literal',
-                            value: 42,
-                            raw: '42',
-                            range: [18, 20],
-                            loc: {
-                                start: { line: 1, column: 18 },
-                                end: { line: 1, column: 20 }
-                            }
-                        },
-                        kind: 'init',
-                        range: [8, 20],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 20 }
-                        }
-                    }],
-                    range: [6, 22],
-                    loc: {
-                        start: { line: 1, column: 6 },
-                        end: { line: 1, column: 22 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 23],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 23 }
-                }
-            },
-            range: [0, 23],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 23 }
-            }
-        },
-
-        // Not an object!
-        'e => { label: 42 }': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'e',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'LabeledStatement',
-                        label: {
-                            type: 'Identifier',
-                            name: 'label',
-                            range: [7, 12],
-                            loc: {
-                                start: { line: 1, column: 7 },
-                                end: { line: 1, column: 12 }
-                            }
-                        },
-                        body: {
-                            type: 'ExpressionStatement',
-                            expression: {
-                                type: 'Literal',
-                                value: 42,
-                                raw: '42',
-                                range: [14, 16],
-                                loc: {
-                                    start: { line: 1, column: 14 },
-                                    end: { line: 1, column: 16 }
-                                }
-                            },
-                            range: [14, 17],
-                            loc: {
-                                start: { line: 1, column: 14 },
-                                end: { line: 1, column: 17 }
-                            }
-                        },
-                        range: [7, 17],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 17 }
-                        }
-                    }],
-                    range: [5, 18],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 18 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: false,
-                range: [0, 18],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 18 }
-                }
-            },
-            range: [0, 18],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 18 }
-            }
-        },
-
-        '(a, b) => { 42; }': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }, {
-                    type: 'Identifier',
-                    name: 'b',
-                    range: [4, 5],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 5 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'BlockStatement',
-                    body: [{
-                        type: 'ExpressionStatement',
-                        expression: {
-                            type: 'Literal',
-                            value: 42,
-                            raw: '42',
-                            range: [12, 14],
-                            loc: {
-                                start: { line: 1, column: 12 },
-                                end: { line: 1, column: 14 }
-                            }
-                        },
-                        range: [12, 15],
-                        loc: {
-                            start: { line: 1, column: 12 },
-                            end: { line: 1, column: 15 }
-                        }
-                    }],
-                    range: [10, 17],
-                    loc: {
-                        start: { line: 1, column: 10 },
-                        end: { line: 1, column: 17 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: false,
-                range: [0, 17],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 17 }
-                }
-            },
-            range: [0, 17],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 17 }
-            }
-        },
-
-        '(x=1) => x * x': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }],
-                defaults: [{
-                    type: 'Literal',
-                    value: 1,
-                    raw: '1',
-                    range: [3, 4],
-                    loc: {
-                        start: { line: 1, column: 3 },
-                        end: { line: 1, column: 4 }
-                    }
-                }],
-                body: {
-                    type: 'BinaryExpression',
-                    operator: '*',
-                    left: {
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [9, 10],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 10 }
-                        }
-                    },
-                    right: {
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [13, 14],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 14 }
-                        }
-                    },
-                    range: [9, 14],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 14 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 14],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 14 }
-                }
-            },
-            range: [0, 14],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 14 }
-            }
-        },
-
-        // not strict mode, using eval
-        'eval => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'eval',
-                    range: [0, 4],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 4 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [8, 10],
-                    loc: {
-                        start: { line: 1, column: 8 },
-                        end: { line: 1, column: 10 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 10],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 10 }
-                }
-            },
-            range: [0, 10],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 10 }
-            }
-        },
-
-        // not strict mode, using arguments
-        'arguments => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'arguments',
-                    range: [0, 9],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 9 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [13, 15],
-                    loc: {
-                        start: { line: 1, column: 13 },
-                        end: { line: 1, column: 15 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 15],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 15 }
-                }
-            },
-            range: [0, 15],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 15 }
-            }
-        },
-
-        // not strict mode, using octals
-        '(a) => 00': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 0,
-                    raw: '00',
-                    range: [7, 9],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 9 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 9],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 9 }
-                }
-            },
-            range: [0, 9],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 9 }
-            }
-        },
-
-        // not strict mode, using eval, IsSimpleParameterList is true
-        '(eval, a) => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'eval',
-                    range: [1, 5],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 5 }
-                    }
-                }, {
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [7, 8],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 8 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [13, 15],
-                    loc: {
-                        start: { line: 1, column: 13 },
-                        end: { line: 1, column: 15 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 15],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 15 }
-                }
-            },
-            range: [0, 15],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 15 }
-            }
-        },
-
-        // not strict mode, assigning to eval
-        '(eval = 10) => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'eval',
-                    range: [1, 5],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 5 }
-                    }
-                }],
-                defaults: [{
-                    type: 'Literal',
-                    value: 10,
-                    raw: '10',
-                    range: [8, 10],
-                    loc: {
-                        start: { line: 1, column: 8 },
-                        end: { line: 1, column: 10 }
-                    }
-                }],
-                body: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [15, 17],
-                    loc: {
-                        start: { line: 1, column: 15 },
-                        end: { line: 1, column: 17 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 17],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 17 }
-                }
-            },
-            range: [0, 17],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 17 }
-            }
-        },
-
-        // not strict mode, using eval, IsSimpleParameterList is false
-        '(eval, a = 10) => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'eval',
-                    range: [1, 5],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 5 }
-                    }
-                }, {
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [7, 8],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 8 }
-                    }
-                }],
-                defaults: [null, {
-                    type: 'Literal',
-                    value: 10,
-                    raw: '10',
-                    range: [11, 13],
-                    loc: {
-                        start: { line: 1, column: 11 },
-                        end: { line: 1, column: 13 }
-                    }
-                }],
-                body: {
-                    type: 'Literal',
-                    value: 42,
-                    raw: '42',
-                    range: [18, 20],
-                    loc: {
-                        start: { line: 1, column: 18 },
-                        end: { line: 1, column: 20 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 20],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 20 }
-                }
-            },
-            range: [0, 20],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 20 }
-            }
-        },
-
-        '(x => x)': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [6, 7],
-                    loc: {
-                        start: { line: 1, column: 6 },
-                        end: { line: 1, column: 7 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [1, 7],
-                loc: {
-                    start: { line: 1, column: 1 },
-                    end: { line: 1, column: 7 }
-                }
-            },
-            range: [0, 8],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 8 }
-            }
-        },
-
-        'x => y => 42': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    params: [{
-                        type: 'Identifier',
-                        name: 'y',
-                        range: [5, 6],
-                        loc: {
-                            start: { line: 1, column: 5 },
-                            end: { line: 1, column: 6 }
-                        }
-                    }],
-                    defaults: [],
-                    body: {
-                        type: 'Literal',
-                        value: 42,
-                        raw: '42',
-                        range: [10, 12],
-                        loc: {
-                            start: { line: 1, column: 10 },
-                            end: { line: 1, column: 12 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: true,
-                    range: [5, 12],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 12 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 12],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 12 }
-                }
-            },
-            range: [0, 12],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 12 }
-            }
-        },
-
-        '(x) => ((y, z) => (x, y, z))': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'ArrowFunctionExpression',
-                id: null,
-                params: [{
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [1, 2],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 2 }
-                    }
-                }],
-                defaults: [],
-                body: {
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    params: [{
-                        type: 'Identifier',
-                        name: 'y',
-                        range: [9, 10],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 10 }
-                        }
-                    }, {
-                        type: 'Identifier',
-                        name: 'z',
-                        range: [12, 13],
-                        loc: {
-                            start: { line: 1, column: 12 },
-                            end: { line: 1, column: 13 }
-                        }
-                    }],
-                    defaults: [],
-                    body: {
-                        type: 'SequenceExpression',
-                        expressions: [{
-                            type: 'Identifier',
-                            name: 'x',
-                            range: [19, 20],
-                            loc: {
-                                start: { line: 1, column: 19 },
-                                end: { line: 1, column: 20 }
-                            }
-                        }, {
-                            type: 'Identifier',
-                            name: 'y',
-                            range: [22, 23],
-                            loc: {
-                                start: { line: 1, column: 22 },
-                                end: { line: 1, column: 23 }
-                            }
-                        }, {
-                            type: 'Identifier',
-                            name: 'z',
-                            range: [25, 26],
-                            loc: {
-                                start: { line: 1, column: 25 },
-                                end: { line: 1, column: 26 }
-                            }
-                        }],
-                        range: [19, 26],
-                        loc: {
-                            start: { line: 1, column: 19 },
-                            end: { line: 1, column: 26 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: true,
-                    range: [8, 27],
-                    loc: {
-                        start: { line: 1, column: 8 },
-                        end: { line: 1, column: 27 }
-                    }
-                },
-                rest: null,
-                generator: false,
-                expression: true,
-                range: [0, 28],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 28 }
-                }
-            },
-            range: [0, 28],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 28 }
-            }
-        },
-
-        'foo(() => {})': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'CallExpression',
-                callee: {
-                    type: 'Identifier',
-                    name: 'foo',
-                    range: [0, 3],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 3 }
-                    }
-                },
-                'arguments': [{
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    params: [],
-                    defaults: [],
-                    body: {
-                        type: 'BlockStatement',
-                        body: [],
-                        range: [10, 12],
-                        loc: {
-                            start: { line: 1, column: 10 },
-                            end: { line: 1, column: 12 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: false,
-                    range: [4, 12],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 12 }
-                    }
-                }],
-                range: [0, 13],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 13 }
-                }
-            },
-            range: [0, 13],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 13 }
-            }
-        },
-
-        'foo((x, y) => {})': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'CallExpression',
-                callee: {
-                    type: 'Identifier',
-                    name: 'foo',
-                    range: [0, 3],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 3 }
-                    }
-                },
-                'arguments': [{
-                    type: 'ArrowFunctionExpression',
-                    id: null,
-                    params: [{
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [5, 6],
-                        loc: {
-                            start: { line: 1, column: 5 },
-                            end: { line: 1, column: 6 }
-                        }
-                    }, {
-                        type: 'Identifier',
-                        name: 'y',
-                        range: [8, 9],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 9 }
-                        }
-                    }],
-                    defaults: [],
-                    body: {
-                        type: 'BlockStatement',
-                        body: [],
-                        range: [14, 16],
-                        loc: {
-                            start: { line: 1, column: 14 },
-                            end: { line: 1, column: 16 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: false,
-                    range: [4, 16],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 16 }
-                    }
-                }],
-                range: [0, 17],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 17 }
-                }
-            },
-            range: [0, 17],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 17 }
-            }
-        },
-
-        '(sun) => earth': {
-            type: "Program",
-            body: [{
-                type: "ExpressionStatement",
-                expression: {
-                    type: "ArrowFunctionExpression",
-                    id: null,
-                    params: [{
-                        type: "Identifier",
-                        name: "sun",
-                        range: [1, 4],
-                        loc: {
-                            start: { line: 1, column: 1 },
-                            end: { line: 1, column: 4 }
-                        }
-                    }],
-                    defaults: [],
-                    body: {
-                        type: "Identifier",
-                        name: "earth",
-                        range: [9, 14],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 14 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: true,
-                    range: [0, 14],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 14 }
-                    }
-                },
-                range: [0, 14],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 14 }
-                }
-            }],
-            range: [0, 14],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 14 }
-            },
-            tokens: [{
-                type: "Punctuator",
-                value: "(",
-                range: [0, 1],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 1 }
-                }
-            }, {
-                type: "Identifier",
-                value: "sun",
-                range: [1, 4],
-                loc: {
-                    start: { line: 1, column: 1 },
-                    end: { line: 1, column: 4 }
-                }
-            }, {
-                type: "Punctuator",
-                value: ")",
-                range: [4, 5],
-                loc: {
-                    start: { line: 1, column: 4 },
-                    end: { line: 1, column: 5 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "=>",
-                range: [6, 8],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 8 }
-                }
-            }, {
-                type: "Identifier",
-                value: "earth",
-                range: [9, 14],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 14 }
-                }
-            }]
         }
 
     },
@@ -14450,112 +11627,6 @@ var testFixture = {
                 start: { line: 1, column: 0 },
                 end: { line: 1, column: 42 }
             }
-        },
-
-        'if (true) that()\n; else;': {
-            type: "IfStatement",
-            test: {
-                type: "Literal",
-                value: true,
-                raw: "true",
-                range: [4, 8],
-                loc: {
-                    start: { line: 1, column: 4 },
-                    end: { line: 1, column: 8 }
-                }
-            },
-            consequent: {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "CallExpression",
-                    callee: {
-                        type: "Identifier",
-                        name: "that",
-                        range: [10, 14],
-                        loc: {
-                            start: { line: 1, column: 10 },
-                            end: { line: 1, column: 14 }
-                        }
-                    },
-                    "arguments": [],
-                    range: [10, 16],
-                    loc: {
-                        start: { line: 1, column: 10 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                range: [10, 18],
-                loc: {
-                    start: { line: 1, column: 10 },
-                    end: { line: 2, column: 1 }
-                }
-            },
-            alternate: {
-                type: "EmptyStatement",
-                range: [23, 24],
-                loc: {
-                    start: { line: 2, column: 6 },
-                    end: { line: 2, column: 7 }
-                }
-            },
-            range: [0, 24],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 2, column: 7 }
-            }
-        },
-
-        'if (true) that(); else;': {
-            type: "IfStatement",
-            test: {
-                type: "Literal",
-                value: true,
-                raw: "true",
-                range: [4, 8],
-                loc: {
-                    start: { line: 1, column: 4 },
-                    end: { line: 1, column: 8 }
-                }
-            },
-            consequent: {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "CallExpression",
-                    callee: {
-                        type: "Identifier",
-                        name: "that",
-                        range: [10, 14],
-                        loc: {
-                            start: { line: 1, column: 10 },
-                            end: { line: 1, column: 14 }
-                        }
-                    },
-                    "arguments": [],
-                    range: [10, 16],
-                    loc: {
-                        start: { line: 1, column: 10 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                range: [10, 17],
-                loc: {
-                    start: { line: 1, column: 10 },
-                    end: { line: 1, column: 17 }
-                }
-            },
-            alternate: {
-                type: "EmptyStatement",
-                range: [22, 23],
-                loc: {
-                    start: { line: 1, column: 22 },
-                    end: { line: 1, column: 23 }
-                }
-            },
-            range: [0, 23],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 23 }
-            }
         }
 
     },
@@ -14800,96 +11871,6 @@ var testFixture = {
             loc: {
                 start: { line: 1, column: 0 },
                 end: { line: 1, column: 30 }
-            }
-        },
-
-        'do that();while (true)': {
-            type: "DoWhileStatement",
-            body: {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "CallExpression",
-                    callee: {
-                        type: "Identifier",
-                        name: "that",
-                        range: [3, 7],
-                        loc: {
-                            start: { line: 1, column: 3 },
-                            end: { line: 1, column: 7 }
-                        }
-                    },
-                    "arguments": [],
-                    range: [3, 9],
-                    loc: {
-                        start: { line: 1, column: 3 },
-                        end: { line: 1, column: 9 }
-                    }
-                },
-                range: [3, 10],
-                loc: {
-                    start: { line: 1, column: 3 },
-                    end: { line: 1, column: 10 }
-                }
-            },
-            test: {
-                type: "Literal",
-                value: true,
-                raw: "true",
-                range: [17, 21],
-                loc: {
-                    start: { line: 1, column: 17 },
-                    end: { line: 1, column: 21 }
-                }
-            },
-            range: [0, 22],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 22 }
-            }
-        },
-
-        'do that()\n;while (true)': {
-            type: "DoWhileStatement",
-            body: {
-                type: "ExpressionStatement",
-                expression: {
-                    type: "CallExpression",
-                    callee: {
-                        type: "Identifier",
-                        name: "that",
-                        range: [3, 7],
-                        loc: {
-                            start: { line: 1, column: 3 },
-                            end: { line: 1, column: 7 }
-                        }
-                    },
-                    "arguments": [],
-                    range: [3, 9],
-                    loc: {
-                        start: { line: 1, column: 3 },
-                        end: { line: 1, column: 9 }
-                    }
-                },
-                range: [3, 11],
-                loc: {
-                    start: { line: 1, column: 3 },
-                    end: { line: 2, column: 1 }
-                }
-            },
-            test: {
-                type: "Literal",
-                value: true,
-                raw: "true",
-                range: [18, 22],
-                loc: {
-                    start: { line: 2, column: 8 },
-                    end: { line: 2, column: 12 }
-                }
-            },
-            range: [0, 23],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 2, column: 13 }
             }
         },
 
@@ -15741,95 +12722,6 @@ var testFixture = {
             }
         },
 
-        'for (var x = 42 in list) process(x);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'VariableDeclaration',
-                declarations: [{
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [9, 10],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 10 }
-                        }
-                    },
-                    init: {
-                        type: 'Literal',
-                        value: 42,
-                        raw: '42',
-                        range: [13, 15],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 15 }
-                        }
-                    },
-                    range: [9, 15],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 15 }
-                    }
-                }],
-                kind: 'var',
-                range: [5, 15],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 15 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'list',
-                range: [19, 23],
-                loc: {
-                    start: { line: 1, column: 19 },
-                    end: { line: 1, column: 23 }
-                }
-            },
-            body: {
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'CallExpression',
-                    callee: {
-                        type: 'Identifier',
-                        name: 'process',
-                        range: [25, 32],
-                        loc: {
-                            start: { line: 1, column: 25 },
-                            end: { line: 1, column: 32 }
-                        }
-                    },
-                    'arguments': [{
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [33, 34],
-                        loc: {
-                            start: { line: 1, column: 33 },
-                            end: { line: 1, column: 34 }
-                        }
-                    }],
-                    range: [25, 35],
-                    loc: {
-                        start: { line: 1, column: 25 },
-                        end: { line: 1, column: 35 }
-                    }
-                },
-                range: [25, 36],
-                loc: {
-                    start: { line: 1, column: 25 },
-                    end: { line: 1, column: 36 }
-                }
-            },
-            each: false,
-            range: [0, 36],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 36 }
-            }
-        },
-
         'for (let x in list) process(x);': {
             type: 'ForInStatement',
             left: {
@@ -15910,204 +12802,8 @@ var testFixture = {
             }
         },
 
-        'for (var x = y = z in q);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'VariableDeclaration',
-                declarations: [{
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: 'x',
-                        range: [9, 10],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 10 }
-                        }
-                    },
-                    init: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'Identifier',
-                            name: 'y',
-                            range: [13, 14],
-                            loc: {
-                                start: { line: 1, column: 13 },
-                                end: { line: 1, column: 14 }
-                            }
-                        },
-                        right: {
-                            type: 'Identifier',
-                            name: 'z',
-                            range: [17, 18],
-                            loc: {
-                                start: { line: 1, column: 17 },
-                                end: { line: 1, column: 18 }
-                            }
-                        },
-                        range: [13, 18],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 18 }
-                        }
-                    },
-                    range: [9, 18],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 18 }
-                    }
-                }],
-                kind: 'var',
-                range: [5, 18],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 18 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'q',
-                range: [22, 23],
-                loc: {
-                    start: { line: 1, column: 22 },
-                    end: { line: 1, column: 23 }
-                }
-            },
-            body: {
-                type: 'EmptyStatement',
-                range: [24, 25],
-                loc: {
-                    start: { line: 1, column: 24 },
-                    end: { line: 1, column: 25 }
-                }
-            },
-            each: false,
-            range: [0, 25],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 25 }
-            }
-        },
-
-        'for (var a = b = c = (d in e) in z);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'VariableDeclaration',
-                declarations: [{
-                    type: 'VariableDeclarator',
-                    id: {
-                        type: 'Identifier',
-                        name: 'a',
-                        range: [9, 10],
-                        loc: {
-                            start: { line: 1, column: 9 },
-                            end: { line: 1, column: 10 }
-                        }
-                    },
-                    init: {
-                        type: 'AssignmentExpression',
-                        operator: '=',
-                        left: {
-                            type: 'Identifier',
-                            name: 'b',
-                            range: [13, 14],
-                            loc: {
-                                start: { line: 1, column: 13 },
-                                end: { line: 1, column: 14 }
-                            }
-                        },
-                        right: {
-                            type: 'AssignmentExpression',
-                            operator: '=',
-                            left: {
-                                type: 'Identifier',
-                                name: 'c',
-                                range: [17, 18],
-                                loc: {
-                                    start: { line: 1, column: 17 },
-                                    end: { line: 1, column: 18 }
-                                }
-                            },
-                            right: {
-                                type: 'BinaryExpression',
-                                operator: 'in',
-                                left: {
-                                    type: 'Identifier',
-                                    name: 'd',
-                                    range: [22, 23],
-                                    loc: {
-                                        start: { line: 1, column: 22 },
-                                        end: { line: 1, column: 23 }
-                                    }
-                                },
-                                right: {
-                                    type: 'Identifier',
-                                    name: 'e',
-                                    range: [27, 28],
-                                    loc: {
-                                        start: { line: 1, column: 27 },
-                                        end: { line: 1, column: 28 }
-                                    }
-                                },
-                                range: [22, 28],
-                                loc: {
-                                    start: { line: 1, column: 22 },
-                                    end: { line: 1, column: 28 }
-                                }
-                            },
-                            range: [17, 29],
-                            loc: {
-                                start: { line: 1, column: 17 },
-                                end: { line: 1, column: 29 }
-                            }
-                        },
-                        range: [13, 29],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 29 }
-                        }
-                    },
-                    range: [9, 29],
-                    loc: {
-                        start: { line: 1, column: 9 },
-                        end: { line: 1, column: 29 }
-                    }
-                }],
-                kind: 'var',
-                range: [5, 29],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 29 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'z',
-                range: [33, 34],
-                loc: {
-                    start: { line: 1, column: 33 },
-                    end: { line: 1, column: 34 }
-                }
-            },
-            body: {
-                type: 'EmptyStatement',
-                range: [35, 36],
-                loc: {
-                    start: { line: 1, column: 35 },
-                    end: { line: 1, column: 36 }
-                }
-            },
-            each: false,
-            range: [0, 36],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 36 }
-            }
-        },
-
-        'for (var i = function() { return 10 in [] } in list) process(x);': {
-            type: 'ForInStatement',
+        'for (var i = function() { return 10 in [] } of list) process(x);': {
+            type: 'ForOfStatement',
             left: {
                 type: 'VariableDeclaration',
                 declarations: [{
@@ -16235,229 +12931,13 @@ var testFixture = {
                     end: { line: 1, column: 64 }
                 }
             },
-            each: false,
             range: [0, 64],
             loc: {
                 start: { line: 1, column: 0 },
                 end: { line: 1, column: 64 }
             }
-        },
-
-        'for (a[b in c] in d);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'MemberExpression',
-                computed: true,
-                object: {
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [5, 6],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 6 }
-                    }
-                },
-                property: {
-                    type: 'BinaryExpression',
-                    operator: 'in',
-                    left: {
-                        type: 'Identifier',
-                        name: 'b',
-                        range: [7, 8],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 8 }
-                        }
-                    },
-                    right: {
-                        type: 'Identifier',
-                        name: 'c',
-                        range: [12, 13],
-                        loc: {
-                            start: { line: 1, column: 12 },
-                            end: { line: 1, column: 13 }
-                        }
-                    },
-                    range: [7, 13],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 13 }
-                    }
-                },
-                range: [5, 14],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 14 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'd',
-                range: [18, 19],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 19 }
-                }
-            },
-            body: {
-                type: 'EmptyStatement',
-                range: [20, 21],
-                loc: {
-                    start: { line: 1, column: 20 },
-                    end: { line: 1, column: 21 }
-                }
-            },
-            each: false,
-            range: [0, 21],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 21 }
-            }
-        },
-
-        'for (a(b in c)[0] in d);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'MemberExpression',
-                computed: true,
-                object: {
-                    type: 'CallExpression',
-                    callee: {
-                        type: 'Identifier',
-                        name: 'a',
-                        range: [5, 6],
-                        loc: {
-                            start: { line: 1, column: 5 },
-                            end: { line: 1, column: 6 }
-                        }
-                    },
-                    arguments: [{
-                        type: 'BinaryExpression',
-                        operator: 'in',
-                        left: {
-                            type: 'Identifier',
-                            name: 'b',
-                            range: [7, 8],
-                            loc: {
-                                start: { line: 1, column: 7 },
-                                end: { line: 1, column: 8 }
-                            }
-                        },
-                        right: {
-                            type: 'Identifier',
-                            name: 'c',
-                            range: [12, 13],
-                            loc: {
-                                start: { line: 1, column: 12 },
-                                end: { line: 1, column: 13 }
-                            }
-                        },
-                        range: [7, 13],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 13 }
-                        }
-                    }],
-                    range: [5, 14],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 14 }
-                    }
-                },
-                property: {
-                    type: 'Literal',
-                    value: 0,
-                    raw: '0',
-                    range: [15, 16],
-                    loc: {
-                        start: { line: 1, column: 15 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                range: [5, 17],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 17 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'd',
-                range: [21, 22],
-                loc: {
-                    start: { line: 1, column: 21 },
-                    end: { line: 1, column: 22 }
-                }
-            },
-            body: {
-                type: 'EmptyStatement',
-                range: [23, 24],
-                loc: {
-                    start: { line: 1, column: 23 },
-                    end: { line: 1, column: 24 }
-                }
-            },
-            each: false,
-            range: [0, 24],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 24 }
-            }
-        },
-
-        'for (a.in in a);': {
-            type: 'ForInStatement',
-            left: {
-                type: 'MemberExpression',
-                computed: false,
-                object: {
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [5, 6],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 6 }
-                    }
-                },
-                property: {
-                    type: 'Identifier',
-                    name: 'in',
-                    range: [7, 9],
-                    loc: {
-                        start: { line: 1, column: 7 },
-                        end: { line: 1, column: 9 }
-                    }
-                },
-                range: [5, 9],
-                loc: {
-                    start: { line: 1, column: 5 },
-                    end: { line: 1, column: 9 }
-                }
-            },
-            right: {
-                type: 'Identifier',
-                name: 'a',
-                range: [13, 14],
-                loc: {
-                    start: { line: 1, column: 13 },
-                    end: { line: 1, column: 14 }
-                }
-            },
-            body: {
-                type: 'EmptyStatement',
-                range: [15, 16],
-                loc: {
-                    start: { line: 1, column: 15 },
-                    end: { line: 1, column: 16 }
-                }
-            },
-            each: false,
-            range: [0, 16],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 16 }
-            }
         }
+
     },
 
     'continue statement': {
@@ -17732,6 +14212,9 @@ var testFixture = {
                         }
                     },
                     kind: 'init',
+                    method: false,
+                    shorthand: false,
+                    computed: false,
                     range: [8, 24],
                     loc: {
                         start: { line: 1, column: 8 },
@@ -19158,219 +15641,6 @@ var testFixture = {
 
     },
 
-    '[ES6] Default Parameter Value': {
-
-        'x = function(y = 1) {}': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'AssignmentExpression',
-                operator: '=',
-                left: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                },
-                right: {
-                    type: 'FunctionExpression',
-                    id: null,
-                    params: [{
-                        type: 'Identifier',
-                        name: 'y',
-                        range: [13, 14],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 14 }
-                        }
-                    }],
-                    defaults: [{
-                        type: 'Literal',
-                        value: 1,
-                        raw: '1',
-                        range: [17, 18],
-                        loc: {
-                            start: { line: 1, column: 17 },
-                            end: { line: 1, column: 18 }
-                        }
-                    }],
-                    body: {
-                        type: 'BlockStatement',
-                        body: [],
-                        range: [20, 22],
-                        loc: {
-                            start: { line: 1, column: 20 },
-                            end: { line: 1, column: 22 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: false,
-                    range: [4, 22],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 22 }
-                    }
-                },
-                range: [0, 22],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 22 }
-                }
-            },
-            range: [0, 22],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 22 }
-            }
-        },
-
-        'function f(a = 1) {}': {
-            type: 'FunctionDeclaration',
-            id: {
-                type: 'Identifier',
-                name: 'f',
-                range: [9, 10],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 10 }
-                }
-            },
-            params: [{
-                type: 'Identifier',
-                name: 'a',
-                range: [11, 12],
-                loc: {
-                    start: { line: 1, column: 11 },
-                    end: { line: 1, column: 12 }
-                }
-            }],
-            defaults: [{
-                type: 'Literal',
-                value: 1,
-                raw: '1',
-                range: [15, 16],
-                loc: {
-                    start: { line: 1, column: 15 },
-                    end: { line: 1, column: 16 }
-                }
-            }],
-            body: {
-                type: 'BlockStatement',
-                body: [],
-                range: [18, 20],
-                loc: {
-                    start: { line: 1, column: 18 },
-                    end: { line: 1, column: 20 }
-                }
-            },
-            rest: null,
-            generator: false,
-            expression: false,
-            range: [0, 20],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 20 }
-            }
-        },
-
-        'x = { f: function(a=1) {} }': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'AssignmentExpression',
-                operator: '=',
-                left: {
-                    type: 'Identifier',
-                    name: 'x',
-                    range: [0, 1],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 1 }
-                    }
-                },
-                right: {
-                    type: 'ObjectExpression',
-                    properties: [{
-                        type: 'Property',
-                        key: {
-                            type: 'Identifier',
-                            name: 'f',
-                            range: [6, 7],
-                            loc: {
-                                start: { line: 1, column: 6 },
-                                end: { line: 1, column: 7 }
-                            }
-                        },
-                        value: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [{
-                                type: 'Identifier',
-                                name: 'a',
-                                range: [18, 19],
-                                loc: {
-                                    start: { line: 1, column: 18 },
-                                    end: { line: 1, column: 19 }
-                                }
-                            }],
-                            defaults: [{
-                                type: 'Literal',
-                                value: 1,
-                                raw: '1',
-                                range: [20, 21],
-                                loc: {
-                                    start: { line: 1, column: 20 },
-                                    end: { line: 1, column: 21 }
-                                }
-                            }],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [],
-                                range: [23, 25],
-                                loc: {
-                                    start: { line: 1, column: 23 },
-                                    end: { line: 1, column: 25 }
-                                }
-                            },
-                            rest: null,
-                            generator: false,
-                            expression: false,
-                            range: [9, 25],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 25 }
-                            }
-                        },
-                        kind: 'init',
-                        range: [6, 25],
-                        loc: {
-                            start: { line: 1, column: 6 },
-                            end: { line: 1, column: 25 }
-                        }
-                    }],
-                    range: [4, 27],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 27 }
-                    }
-                },
-                range: [0, 27],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 27 }
-                }
-            },
-            range: [0, 27],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 27 }
-            }
-        }
-
-    },
-
     'Automatic semicolon insertion': {
 
         '{ x\n++y }': {
@@ -19386,10 +15656,10 @@ var testFixture = {
                         end: { line: 1, column: 3 }
                     }
                 },
-                range: [2, 4],
+                range: [2, 3],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 3 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -19438,10 +15708,10 @@ var testFixture = {
                         end: { line: 1, column: 3 }
                     }
                 },
-                range: [2, 4],
+                range: [2, 3],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 3 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -19563,10 +15833,10 @@ var testFixture = {
                     }
                 }],
                 kind: 'var',
-                range: [2, 20],
+                range: [2, 19],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 19 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -20094,10 +16364,10 @@ var testFixture = {
                         end: { line: 1, column: 13 }
                     }
                 },
-                range: [2, 14],
+                range: [2, 13],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 13 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -20136,10 +16406,10 @@ var testFixture = {
                         end: { line: 1, column: 13 }
                     }
                 },
-                range: [2, 24],
+                range: [2, 13],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 0 }
+                    end: { line: 1, column: 13 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -20178,10 +16448,10 @@ var testFixture = {
                         end: { line: 1, column: 13 }
                     }
                 },
-                range: [2, 36],
+                range: [2, 13],
                 loc: {
                     start: { line: 1, column: 2 },
-                    end: { line: 2, column: 10 }
+                    end: { line: 1, column: 13 }
                 }
             }, {
                 type: 'ExpressionStatement',
@@ -20204,306 +16474,6 @@ var testFixture = {
             loc: {
                 start: { line: 1, column: 0 },
                 end: { line: 2, column: 18 }
-            }
-        }
-
-    },
-
-    'Directive Prolog': {
-
-        '(function () { \'use\\x20strict\'; with (i); }())': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'CallExpression',
-                callee: {
-                    type: 'FunctionExpression',
-                    id: null,
-                    params: [],
-                    defaults: [],
-                    body: {
-                        type: 'BlockStatement',
-                        body: [{
-                            type: 'ExpressionStatement',
-                            expression: {
-                                type: 'Literal',
-                                value: 'use strict',
-                                raw: '\'use\\x20strict\'',
-                                range: [15, 30],
-                                loc: {
-                                    start: { line: 1, column: 15 },
-                                    end: { line: 1, column: 30 }
-                                }
-                            },
-                            range: [15, 31],
-                            loc: {
-                                start: { line: 1, column: 15 },
-                                end: { line: 1, column: 31 }
-                            }
-                        }, {
-                            type: 'WithStatement',
-                            object: {
-                                type: 'Identifier',
-                                name: 'i',
-                                range: [38, 39],
-                                loc: {
-                                    start: { line: 1, column: 38 },
-                                    end: { line: 1, column: 39 }
-                                }
-                            },
-                            body: {
-                                type: 'EmptyStatement',
-                                range: [40, 41],
-                                loc: {
-                                    start: { line: 1, column: 40 },
-                                    end: { line: 1, column: 41 }
-                                }
-                            },
-                            range: [32, 41],
-                            loc: {
-                                start: { line: 1, column: 32 },
-                                end: { line: 1, column: 41 }
-                            }
-                        }],
-                        range: [13, 43],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 43 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: false,
-                    range: [1, 43],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 43 }
-                    }
-                },
-                'arguments': [],
-                range: [1, 45],
-                loc: {
-                    start: { line: 1, column: 1 },
-                    end: { line: 1, column: 45 }
-                }
-            },
-            range: [0, 46],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 46 }
-            }
-        },
-
-        '(function () { \'use\\nstrict\'; with (i); }())': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'CallExpression',
-                callee: {
-                    type: 'FunctionExpression',
-                    id: null,
-                    params: [],
-                    defaults: [],
-                    body: {
-                        type: 'BlockStatement',
-                        body: [{
-                            type: 'ExpressionStatement',
-                            expression: {
-                                type: 'Literal',
-                                value: 'use\nstrict',
-                                raw: '\'use\\nstrict\'',
-                                range: [15, 28],
-                                loc: {
-                                    start: { line: 1, column: 15 },
-                                    end: { line: 1, column: 28 }
-                                }
-                            },
-                            range: [15, 29],
-                            loc: {
-                                start: { line: 1, column: 15 },
-                                end: { line: 1, column: 29 }
-                            }
-                        }, {
-                            type: 'WithStatement',
-                            object: {
-                                type: 'Identifier',
-                                name: 'i',
-                                range: [36, 37],
-                                loc: {
-                                    start: { line: 1, column: 36 },
-                                    end: { line: 1, column: 37 }
-                                }
-                            },
-                            body: {
-                                type: 'EmptyStatement',
-                                range: [38, 39],
-                                loc: {
-                                    start: { line: 1, column: 38 },
-                                    end: { line: 1, column: 39 }
-                                }
-                            },
-                            range: [30, 39],
-                            loc: {
-                                start: { line: 1, column: 30 },
-                                end: { line: 1, column: 39 }
-                            }
-                        }],
-                        range: [13, 41],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 41 }
-                        }
-                    },
-                    rest: null,
-                    generator: false,
-                    expression: false,
-                    range: [1, 41],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 41 }
-                    }
-                },
-                'arguments': [],
-                range: [1, 43],
-                loc: {
-                    start: { line: 1, column: 1 },
-                    end: { line: 1, column: 43 }
-                }
-            },
-            range: [0, 44],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 44 }
-            }
-        }
-
-    },
-
-    'Whitespace': {
-
-        'new\x20\x09\x0B\x0C\xA0\u1680\u180E\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200A\u202F\u205F\u3000\uFEFFa': {
-            type: 'ExpressionStatement',
-            expression: {
-                type: 'NewExpression',
-                callee: {
-                    type: 'Identifier',
-                    name: 'a',
-                    range: [25, 26],
-                    loc: {
-                        start: {line: 1, column: 25},
-                        end: {line: 1, column: 26}
-                    }
-                },
-                arguments: [],
-                range: [0, 26],
-                loc: {
-                    start: {line: 1, column: 0},
-                    end: {line: 1, column: 26}
-                }
-            },
-            range: [0, 26],
-            loc: {
-                start: {line: 1, column: 0},
-                end: {line: 1, column: 26}
-            }
-        },
-
-        '{0\x0A1\x0D2\u20283\u20294}': {
-            type: 'BlockStatement',
-            body: [
-                {
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'Literal',
-                        value: 0,
-                        raw: '0',
-                        range: [1, 2],
-                        loc: {
-                            start: {line: 1, column: 1},
-                            end: {line: 1, column: 2}
-                        }
-                    },
-                    range: [1, 3],
-                    loc: {
-                        start: {line: 1, column: 1},
-                        end: {line: 2, column: 0}
-                    }
-                },
-                {
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'Literal',
-                        value: 1,
-                        raw: '1',
-                        range: [3, 4],
-                        loc: {
-                            start: {line: 2, column: 0},
-                            end: {line: 2, column: 1}
-                        }
-                    },
-                    range: [3, 5],
-                    loc: {
-                        start: {line: 2, column: 0},
-                        end: {line: 3, column: 0}
-                    }
-                },
-                {
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'Literal',
-                        value: 2,
-                        raw: '2',
-                        range: [5, 6],
-                        loc: {
-                            start: {line: 3, column: 0},
-                            end: {line: 3, column: 1}
-                        }
-                    },
-                    range: [5, 7],
-                    loc: {
-                        start: {line: 3, column: 0},
-                        end: {line: 4, column: 0}
-                    }
-                },
-                {
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'Literal',
-                        value: 3,
-                        raw: '3',
-                        range: [7, 8],
-                        loc: {
-                            start: {line: 4, column: 0},
-                            end: {line: 4, column: 1}
-                        }
-                    },
-                    range: [7, 9],
-                    loc: {
-                        start: {line: 4, column: 0},
-                        end: {line: 5, column: 0}
-                    }
-                },
-                {
-                    type: 'ExpressionStatement',
-                    expression: {
-                        type: 'Literal',
-                        value: 4,
-                        raw: '4',
-                        range: [9, 10],
-                        loc: {
-                            start: {line: 5, column: 0},
-                            end: {line: 5, column: 1}
-                        }
-                    },
-                    range: [9, 10],
-                    loc: {
-                        start: {line: 5, column: 0},
-                        end: {line: 5, column: 1}
-                    }
-                }
-            ],
-            range: [0, 11],
-            loc: {
-                start: {line: 1, column: 0},
-                end: {line: 5, column: 2}
             }
         }
 
@@ -20857,39 +16827,11 @@ var testFixture = {
             message: 'Error: Line 1: Invalid regular expression: missing /'
         },
 
-        '/test\n/': {
-            index: 6,
-            lineNumber: 1,
-            column: 7,
-            message: 'Error: Line 1: Invalid regular expression: missing /'
-        },
-
         'var x = /[a-z]/\\ux': {
-            index: 17,
+            index: 18,
             lineNumber: 1,
-            column: 18,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
-        },
-
-        'var x = /[a-z\n]/\\ux': {
-            index: 14,
-            lineNumber: 1,
-            column: 15,
-            message: 'Error: Line 1: Invalid regular expression: missing /'
-        },
-
-        'var x = /[a-z]/\\\\ux': {
-            index: 16,
-            lineNumber: 1,
-            column: 17,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
-        },
-
-        'var x = /[P QR]/\\\\u0067': {
-            index: 17,
-            lineNumber: 1,
-            column: 18,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
+            column: 19,
+            message: 'Error: Line 1: Invalid regular expression'
         },
 
         '3 = 4': {
@@ -20911,34 +16853,6 @@ var testFixture = {
             lineNumber: 1,
             column: 8,
             message: 'Error: Line 1: Invalid left-hand side in assignment'
-        },
-
-        '"\\u{110000}"': {
-            index: 11,
-            lineNumber: 1,
-            column: 12,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
-        },
-
-        '"\\u{}"': {
-            index: 4,
-            lineNumber: 1,
-            column: 5,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
-        },
-
-        '"\\u{FFFF"': {
-            index: 9,
-            lineNumber: 1,
-            column: 10,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
-        },
-
-        '"\\u{FFZ}"': {
-            index: 7,
-            lineNumber: 1,
-            column: 8,
-            message: 'Error: Line 1: Unexpected token ILLEGAL'
         },
 
         '1++': {
@@ -21102,13 +17016,6 @@ var testFixture = {
             message: 'Error: Line 1: Unexpected token .'
         },
 
-        '({ set s() { } })': {
-            index: 9,
-            lineNumber: 1,
-            column: 10,
-            message: 'Error: Line 1: Unexpected token )'
-        },
-
         '({ set: s() { } })': {
             index: 12,
             lineNumber: 1,
@@ -21170,129 +17077,6 @@ var testFixture = {
             lineNumber: 1,
             column: 30,
             message: 'Error: Line 1: Object literal may not have multiple get/set accessors with the same name'
-        },
-
-        '((a)) => 42': {
-            index: 6,
-            lineNumber: 1,
-            column: 7,
-            message: 'Error: Line 1: Unexpected token =>'
-        },
-
-        '(a, (b)) => 42': {
-            index: 9,
-            lineNumber: 1,
-            column: 10,
-            message: 'Error: Line 1: Unexpected token =>'
-        },
-
-        '"use strict"; (eval = 10) => 42': {
-            index: 15,
-            lineNumber: 1,
-            column: 16,
-            message: 'Error: Line 1: Assignment to eval or arguments is not allowed in strict mode'
-        },
-
-        // strict mode, using eval when IsSimpleParameterList is true
-        '"use strict"; eval => 42': {
-            index: 24,
-            lineNumber: 1,
-            column: 25,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
-        },
-
-        // strict mode, using arguments when IsSimpleParameterList is true
-        '"use strict"; arguments => 42': {
-            index: 29,
-            lineNumber: 1,
-            column: 30,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
-        },
-
-        // strict mode, using eval when IsSimpleParameterList is true
-        '"use strict"; (eval, a) => 42': {
-            index: 29,
-            lineNumber: 1,
-            column: 30,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
-        },
-
-        // strict mode, using arguments when IsSimpleParameterList is true
-        '"use strict"; (arguments, a) => 42': {
-            index: 34,
-            lineNumber: 1,
-            column: 35,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
-        },
-
-        '(a, a) => 42': {
-            index: 6,
-            lineNumber: 1,
-            column: 7,
-            message: 'Error: Line 1: Strict mode function may not have duplicate parameter names'
-        },
-
-        '"use strict"; (a, a) => 42': {
-            index: 20,
-            lineNumber: 1,
-            column: 21,
-            message: 'Error: Line 1: Strict mode function may not have duplicate parameter names'
-        },
-
-        '"use strict"; (a) => 00': {
-            index: 21,
-            lineNumber: 1,
-            column: 22,
-            message: 'Error: Line 1: Octal literals are not allowed in strict mode.'
-        },
-
-        '() <= 42': {
-            index: 3,
-            lineNumber: 1,
-            column: 4,
-            message: 'Error: Line 1: Unexpected token <='
-        },
-
-        '() ? 42': {
-            index: 3,
-            lineNumber: 1,
-            column: 4,
-            message: 'Error: Line 1: Unexpected token ?'
-        },
-
-        '() + 42': {
-            index: 3,
-            lineNumber: 1,
-            column: 4,
-            message: 'Error: Line 1: Unexpected token +'
-        },
-
-        '(10) => 00': {
-            index: 5,
-            lineNumber: 1,
-            column: 6,
-            message: 'Error: Line 1: Unexpected token =>'
-        },
-
-        '(10, 20) => 00': {
-            index: 9,
-            lineNumber: 1,
-            column: 10,
-            message: 'Error: Line 1: Unexpected token =>'
-        },
-
-        '"use strict"; (eval) => 42': {
-            index: 26,
-            lineNumber: 1,
-            column: 27,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
-        },
-
-        '(eval) => { "use strict"; 42 }': {
-            index: 30,
-            lineNumber: 1,
-            column: 31,
-            message: 'Error: Line 1: Parameter name eval or arguments is not allowed in strict mode'
         },
 
         'function t(if) { }': {
@@ -21505,28 +17289,6 @@ var testFixture = {
             message: 'Error: Line 1: Missing catch or finally after try'
         },
 
-        'try {} catch (42) {} ': {
-            index: 14,
-            lineNumber: 1,
-            column: 15,
-            message: 'Error: Line 1: Unexpected number'
-        },
-
-        'try {} catch (answer()) {} ': {
-            index: 20,
-            lineNumber: 1,
-            column: 21,
-            message: 'Error: Line 1: Unexpected token ('
-        },
-
-        'try {} catch (-x) {} ': {
-            index: 14,
-            lineNumber: 1,
-            column: 15,
-            message: 'Error: Line 1: Unexpected token -'
-        },
-
-
         '\u203F = 10': {
             index: 0,
             lineNumber: 1,
@@ -21538,21 +17300,21 @@ var testFixture = {
             index: 15,
             lineNumber: 1,
             column: 16,
-            message: 'Error: Line 1: Unexpected token ;'
+            message: 'Error: Line 1: Const must be initialized'
         },
 
         'const x, y = 12;': {
             index: 7,
             lineNumber: 1,
             column: 8,
-            message: 'Error: Line 1: Unexpected token ,'
+            message: 'Error: Line 1: Const must be initialized'
         },
 
         'const x;': {
             index: 7,
             lineNumber: 1,
             column: 8,
-            message: 'Error: Line 1: Unexpected token ;'
+            message: 'Error: Line 1: Const must be initialized'
         },
 
         'if(true) let a = 1;': {
@@ -21858,9 +17620,9 @@ var testFixture = {
         },
 
         '(function () { \'use strict\'; with (i); }())': {
-            index: 29,
+            index: 28,
             lineNumber: 1,
-            column: 30,
+            column: 29,
             message: 'Error: Line 1: Strict mode code may not include a with statement'
         },
 
@@ -22243,10 +18005,60 @@ var testFixture = {
         },
 
         'var yield': {
-            index: 4,
-            lineNumber: 1,
-            column: 5,
-            message: 'Error: Line 1: Unexpected token yield'
+            "type": "VariableDeclaration",
+            "declarations": [
+                {
+                    "type": "VariableDeclarator",
+                    "id": {
+                        "type": "Identifier",
+                        "name": "yield",
+                        "range": [
+                            4,
+                            9
+                        ],
+                        "loc": {
+                            "start": {
+                                "line": 1,
+                                "column": 4
+                            },
+                            "end": {
+                                "line": 1,
+                                "column": 9
+                            }
+                        }
+                    },
+                    "init": null,
+                    "range": [
+                        4,
+                        9
+                    ],
+                    "loc": {
+                        "start": {
+                            "line": 1,
+                            "column": 4
+                        },
+                        "end": {
+                            "line": 1,
+                            "column": 9
+                        }
+                    }
+                }
+            ],
+            "kind": "var",
+            "range": [
+                0,
+                9
+            ],
+            "loc": {
+                "start": {
+                    "line": 1,
+                    "column": 0
+                },
+                "end": {
+                    "line": 1,
+                    "column": 9
+                }
+            }
         },
 
         'var let': {
@@ -22423,6 +18235,24 @@ var testFixture = {
                 }
             },
             {
+                "type": "Punctuator",
+                "value": ")",
+                "range": [
+                    13,
+                    14
+                ],
+                "loc": {
+                    "start": {
+                        "line": 1,
+                        "column": 13
+                    },
+                    "end": {
+                        "line": 1,
+                        "column": 14
+                    }
+                }
+            },
+            {
                 "type": "RegularExpression",
                 "value": "/42/",
                 "range": [
@@ -22548,6 +18378,24 @@ var testFixture = {
                     "end": {
                         "line": 1,
                         "column": 12
+                    }
+                }
+            },
+            {
+                "type": "Punctuator",
+                "value": "}",
+                "range": [
+                    18,
+                    19
+                ],
+                "loc": {
+                    "start": {
+                        "line": 1,
+                        "column": 18
+                    },
+                    "end": {
+                        "line": 1,
+                        "column": 19
                     }
                 }
             },
@@ -23537,99 +19385,6 @@ var testFixture = {
             }
         ],
 
-        '[a] / b': [
-            {
-                "type": "Punctuator",
-                "value": "[",
-                "range": [
-                    0,
-                    1
-                ],
-                "loc": {
-                    "start": {
-                        "line": 1,
-                        "column": 0
-                    },
-                    "end": {
-                        "line": 1,
-                        "column": 1
-                    }
-                }
-            },
-            {
-                "type": "Identifier",
-                "value": "a",
-                "range": [
-                    1,
-                    2
-                ],
-                "loc": {
-                    "start": {
-                        "line": 1,
-                        "column": 1
-                    },
-                    "end": {
-                        "line": 1,
-                        "column": 2
-                    }
-                }
-            },
-            {
-                "type": "Punctuator",
-                "value": "]",
-                "range": [
-                    2,
-                    3
-                ],
-                "loc": {
-                    "start": {
-                        "line": 1,
-                        "column": 2
-                    },
-                    "end": {
-                        "line": 1,
-                        "column": 3
-                    }
-                }
-            },
-            {
-                "type": "Punctuator",
-                "value": "/",
-                "range": [
-                    4,
-                    5
-                ],
-                "loc": {
-                    "start": {
-                        "line": 1,
-                        "column": 4
-                    },
-                    "end": {
-                        "line": 1,
-                        "column": 5
-                    }
-                }
-            },
-            {
-                "type": "Identifier",
-                "value": "b",
-                "range": [
-                    6,
-                    7
-                ],
-                "loc": {
-                    "start": {
-                        "line": 1,
-                        "column": 6
-                    },
-                    "end": {
-                        "line": 1,
-                        "column": 7
-                    }
-                }
-            }
-        ],
-
         '': [],
 
         '/42': {
@@ -23779,38 +19534,57 @@ var testFixture = {
         'Syntax': {
             property: 'Syntax',
             result: {
-                AssignmentExpression: 'AssignmentExpression',
                 ArrayExpression: 'ArrayExpression',
+                ArrayPattern: 'ArrayPattern',
                 ArrowFunctionExpression: 'ArrowFunctionExpression',
-                BlockStatement: 'BlockStatement',
+                AssignmentExpression: 'AssignmentExpression',
                 BinaryExpression: 'BinaryExpression',
+                BlockStatement: 'BlockStatement',
                 BreakStatement: 'BreakStatement',
                 CallExpression: 'CallExpression',
                 CatchClause: 'CatchClause',
+                ClassBody: 'ClassBody',
+                ClassDeclaration: 'ClassDeclaration',
+                ClassExpression: 'ClassExpression',
+                ComprehensionBlock: 'ComprehensionBlock',
+                ComprehensionExpression: 'ComprehensionExpression',
                 ConditionalExpression: 'ConditionalExpression',
                 ContinueStatement: 'ContinueStatement',
-                DoWhileStatement: 'DoWhileStatement',
                 DebuggerStatement: 'DebuggerStatement',
+                DoWhileStatement: 'DoWhileStatement',
                 EmptyStatement: 'EmptyStatement',
+                ExportDeclaration: 'ExportDeclaration',
+                ExportBatchSpecifier: 'ExportBatchSpecifier',
+                ExportSpecifier: 'ExportSpecifier',
                 ExpressionStatement: 'ExpressionStatement',
-                ForStatement: 'ForStatement',
                 ForInStatement: 'ForInStatement',
+                ForOfStatement: 'ForOfStatement',
+                ForStatement: 'ForStatement',
                 FunctionDeclaration: 'FunctionDeclaration',
                 FunctionExpression: 'FunctionExpression',
                 Identifier: 'Identifier',
                 IfStatement: 'IfStatement',
-                Literal: 'Literal',
+                ImportDeclaration: 'ImportDeclaration',
+                ImportSpecifier: 'ImportSpecifier',
                 LabeledStatement: 'LabeledStatement',
+                Literal: 'Literal',
                 LogicalExpression: 'LogicalExpression',
                 MemberExpression: 'MemberExpression',
+                MethodDefinition: 'MethodDefinition',
+                ModuleDeclaration: 'ModuleDeclaration',
                 NewExpression: 'NewExpression',
                 ObjectExpression: 'ObjectExpression',
+                ObjectPattern: 'ObjectPattern',
                 Program: 'Program',
                 Property: 'Property',
                 ReturnStatement: 'ReturnStatement',
                 SequenceExpression: 'SequenceExpression',
-                SwitchStatement: 'SwitchStatement',
+                SpreadElement: 'SpreadElement',
                 SwitchCase: 'SwitchCase',
+                SwitchStatement: 'SwitchStatement',
+                TaggedTemplateExpression: 'TaggedTemplateExpression',
+                TemplateElement: 'TemplateElement',
+                TemplateLiteral: 'TemplateLiteral',
                 ThisExpression: 'ThisExpression',
                 ThrowStatement: 'ThrowStatement',
                 TryStatement: 'TryStatement',
@@ -23819,7 +19593,8 @@ var testFixture = {
                 VariableDeclaration: 'VariableDeclaration',
                 VariableDeclarator: 'VariableDeclarator',
                 WhileStatement: 'WhileStatement',
-                WithStatement: 'WithStatement'
+                WithStatement: 'WithStatement',
+                YieldExpression: 'YieldExpression'
             }
         },
 
@@ -23893,1047 +19668,11 @@ var testFixture = {
             type: 'Boolean',
             value: 'true'
           }]
-        }
+        },
+
     },
 
     'Tolerant parse': {
-        /** argument recovery */
-        'f(a b c);': {
-            range: [0, 9],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 9 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 9],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 9 }
-                },
-                type: "ExpressionStatement",
-                expression: {
-                    range: [0, 8],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 8 }
-                    },
-                    type: "CallExpression",
-                    callee: {
-                        range: [0, 1],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 1 }
-                        },
-                        type: "Identifier",
-                        name: "f"
-                    },
-                    "arguments": [{
-                        range: [2, 3],
-                        loc: {
-                            start: { line: 1, column: 2 },
-                            end: { line: 1, column: 3 }
-                        },
-                        type: "Identifier",
-                        name: "a"
-                    }, {
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        },
-                        type: "Identifier",
-                        name: "b"
-                    }, {
-                        range: [6, 7],
-                        loc: {
-                            start: { line: 1, column: 6 },
-                            end: { line: 1, column: 7 }
-                        },
-                        type: "Identifier",
-                        name: "c"
-                    }]
-                }
-            }],
-            errors: [{
-                index: 4,
-                lineNumber: 1,
-                column: 5,
-                message: "Error: Line 1: Unexpected token b"
-            }, {
-                index: 6,
-                lineNumber: 1,
-                column: 7,
-                message: "Error: Line 1: Unexpected token c"
-            }]
-        },
-        
-        /** argument recovery function */
-        'f(a function(){} c);': {
-            range: [0, 20],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 20 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 20],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 20 }
-                },
-                type: "ExpressionStatement",
-                expression: {
-                    range: [0, 19],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 19 }
-                    },
-                    type: "CallExpression",
-                    callee: {
-                        range: [0, 1],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 1 }
-                        },
-                        type: "Identifier",
-                        name: "f"
-                    },
-                    "arguments": [{
-                        range: [2, 3],
-                        loc: {
-                            start: { line: 1, column: 2 },
-                            end: { line: 1, column: 3 }
-                        },
-                        type: "Identifier",
-                        name: "a"
-                    }, {
-                        range: [4, 16],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 16 }
-                        },
-                        type: "FunctionExpression",
-                        id: null,
-                        params: [],
-                        defaults: [],
-                        body: {
-                            range: [14, 16],
-                            loc: {
-                                start: { line: 1, column: 14 },
-                                end: { line: 1, column: 16 }
-                            },
-                            type: "BlockStatement",
-                            body: []
-                        },
-                        rest: null,
-                        generator: false,
-                        expression: false
-                    }, {
-                        range: [17, 18],
-                        loc: {
-                            start: { line: 1, column: 17 },
-                            end: { line: 1, column: 18 }
-                        },
-                        type: "Identifier",
-                        name: "c"
-                    }]
-                }
-            }],
-            errors: [{
-                index: 4,
-                lineNumber: 1,
-                column: 5,
-                message: "Error: Line 1: Unexpected token function"
-            }, {
-                index: 17,
-                lineNumber: 1,
-                column: 18,
-                message: "Error: Line 1: Unexpected token c"
-            }]
-        },
-        
-        /** argument recovery object */
-        'f({} b c);': {
-            range: [0, 10],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 10 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 10],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 10 }
-                },
-                type: "ExpressionStatement",
-                expression: {
-                    range: [0, 9],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 9 }
-                    },
-                    type: "CallExpression",
-                    callee: {
-                        range: [0, 1],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 1 }
-                        },
-                        type: "Identifier",
-                        name: "f"
-                    },
-                    "arguments": [{
-                        range: [2, 4],
-                        loc: {
-                            start: { line: 1, column: 2 },
-                            end: { line: 1, column: 4 }
-                        },
-                        type: "ObjectExpression",
-                        properties: []
-                    }, {
-                        range: [5, 6],
-                        loc: {
-                            start: { line: 1, column: 5 },
-                            end: { line: 1, column: 6 }
-                        },
-                        type: "Identifier",
-                        name: "b"
-                    }, {
-                        range: [7, 8],
-                        loc: {
-                            start: { line: 1, column: 7 },
-                            end: { line: 1, column: 8 }
-                        },
-                        type: "Identifier",
-                        name: "c"
-                    }]
-                }
-            }],
-            errors: [{
-                index: 5,
-                lineNumber: 1,
-                column: 6,
-                message: "Error: Line 1: Unexpected token b"
-            }, {
-                index: 7,
-                lineNumber: 1,
-                column: 8,
-                message: "Error: Line 1: Unexpected token c"
-            }]
-        },
-        
-        /** single recovery - missing comma*/
-        'var o = {one: function() {} two:2};': {
-            range: [0, 35],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 35 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 35],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 35 }
-                },
-                type: "VariableDeclaration",
-                declarations: [{
-                    range: [4, 34],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 34 }
-                    },
-                    type: "VariableDeclarator",
-                    id: {
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        },
-                        type: "Identifier",
-                        name: "o"
-                    },
-                    init: {
-                        range: [8, 34],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 34 }
-                        },
-                        type: "ObjectExpression",
-                        properties: [{
-                            range: [9, 27],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 27 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [9, 12],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 12 }
-                                },
-                                type: "Identifier",
-                                name: "one"
-                            },
-                            value: {
-                                range: [14, 27],
-                                loc: {
-                                    start: { line: 1, column: 14 },
-                                    end: { line: 1, column: 27 }
-                                },
-                                type: "FunctionExpression",
-                                id: null,
-                                params: [],
-                                defaults: [],
-                                body: {
-                                    range: [25, 27],
-                                    loc: {
-                                        start: { line: 1, column: 25 },
-                                        end: { line: 1, column: 27 }
-                                    },
-                                    type: "BlockStatement",
-                                    body: []
-                                },
-                                rest: null,
-                                generator: false,
-                                expression: false
-                            },
-                            kind: "init"
-                        }, {
-                            range: [28, 33],
-                            loc: {
-                                start: { line: 1, column: 28 },
-                                end: { line: 1, column: 33 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [28, 31],
-                                loc: {
-                                    start: { line: 1, column: 28 },
-                                    end: { line: 1, column: 31 }
-                                },
-                                type: "Identifier",
-                                name: "two"
-                            },
-                            value: {
-                                range: [32, 33],
-                                loc: {
-                                    start: { line: 1, column: 32 },
-                                    end: { line: 1, column: 33 }
-                                },
-                                type: "Literal",
-                                value: 2,
-                                raw: "2"
-                            },
-                            kind: "init"
-                        }]
-                    }
-                }],
-                kind: "var"
-            }],
-            tokens: [{
-                type: "Keyword",
-                value: "var",
-                range: [0, 3],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 3 }
-                }
-            }, {
-                type: "Identifier",
-                value: "o",
-                range: [4, 5],
-                loc: {
-                    start: { line: 1, column: 4 },
-                    end: { line: 1, column: 5 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "=",
-                range: [6, 7],
-                loc: {
-                    start: { line: 1, column: 6 },
-                    end: { line: 1, column: 7 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "{",
-                range: [8, 9],
-                loc: {
-                    start: { line: 1, column: 8 },
-                    end: { line: 1, column: 9 }
-                }
-            }, {
-                type: "Identifier",
-                value: "one",
-                range: [9, 12],
-                loc: {
-                    start: { line: 1, column: 9 },
-                    end: { line: 1, column: 12 }
-                }
-            }, {
-                type: "Punctuator",
-                value: ":",
-                range: [12, 13],
-                loc: {
-                    start: { line: 1, column: 12 },
-                    end: { line: 1, column: 13 }
-                }
-            }, {
-                type: "Keyword",
-                value: "function",
-                range: [14, 22],
-                loc: {
-                    start: { line: 1, column: 14 },
-                    end: { line: 1, column: 22 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "(",
-                range: [22, 23],
-                loc: {
-                    start: { line: 1, column: 22 },
-                    end: { line: 1, column: 23 }
-                }
-            }, {
-                type: "Punctuator",
-                value: ")",
-                range: [23, 24],
-                loc: {
-                    start: { line: 1, column: 23 },
-                    end: { line: 1, column: 24 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "{",
-                range: [25, 26],
-                loc: {
-                    start: { line: 1, column: 25 },
-                    end: { line: 1, column: 26 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "}",
-                range: [26, 27],
-                loc: {
-                    start: { line: 1, column: 26 },
-                    end: { line: 1, column: 27 }
-                }
-            }, {
-                type: "Identifier",
-                value: "two",
-                range: [28, 31],
-                loc: {
-                    start: { line: 1, column: 28 },
-                    end: { line: 1, column: 31 }
-                }
-            }, {
-                type: "Punctuator",
-                value: ":",
-                range: [31, 32],
-                loc: {
-                    start: { line: 1, column: 31 },
-                    end: { line: 1, column: 32 }
-                }
-            }, {
-                type: "Numeric",
-                value: "2",
-                range: [32, 33],
-                loc: {
-                    start: { line: 1, column: 32 },
-                    end: { line: 1, column: 33 }
-                }
-            }, {
-                type: "Punctuator",
-                value: "}",
-                range: [33, 34],
-                loc: {
-                    start: { line: 1, column: 33 },
-                    end: { line: 1, column: 34 }
-                }
-            }, {
-                type: "Punctuator",
-                value: ";",
-                range: [34, 35],
-                loc: {
-                    start: { line: 1, column: 34 },
-                    end: { line: 1, column: 35 }
-                }
-            }],
-            errors: [{
-                index: 28,
-                lineNumber: 1,
-                column: 29,
-                message: "Error: Line 1: Unexpected token two"
-            }]
-        },
-        
-        /** successive recovery - missing comma*/
-        'var o = {one: function() {} two:2 three: 3};': {
-            range: [0, 44],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 44 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 44],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 44 }
-                },
-                type: "VariableDeclaration",
-                declarations: [{
-                    range: [4, 43],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 43 }
-                    },
-                    type: "VariableDeclarator",
-                    id: {
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        },
-                        type: "Identifier",
-                        name: "o"
-                    },
-                    init: {
-                        range: [8, 43],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 43 }
-                        },
-                        type: "ObjectExpression",
-                        properties: [{
-                            range: [9, 27],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 27 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [9, 12],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 12 }
-                                },
-                                type: "Identifier",
-                                name: "one"
-                            },
-                            value: {
-                                range: [14, 27],
-                                loc: {
-                                    start: { line: 1, column: 14 },
-                                    end: { line: 1, column: 27 }
-                                },
-                                type: "FunctionExpression",
-                                id: null,
-                                params: [],
-                                defaults: [],
-                                body: {
-                                    range: [25, 27],
-                                    loc: {
-                                        start: { line: 1, column: 25 },
-                                        end: { line: 1, column: 27 }
-                                    },
-                                    type: "BlockStatement",
-                                    body: []
-                                },
-                                rest: null,
-                                generator: false,
-                                expression: false
-                            },
-                            kind: "init"
-                        }, {
-                            range: [28, 33],
-                            loc: {
-                                start: { line: 1, column: 28 },
-                                end: { line: 1, column: 33 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [28, 31],
-                                loc: {
-                                    start: { line: 1, column: 28 },
-                                    end: { line: 1, column: 31 }
-                                },
-                                type: "Identifier",
-                                name: "two"
-                            },
-                            value: {
-                                range: [32, 33],
-                                loc: {
-                                    start: { line: 1, column: 32 },
-                                    end: { line: 1, column: 33 }
-                                },
-                                type: "Literal",
-                                value: 2,
-                                raw: "2"
-                            },
-                            kind: "init"
-                        }, {
-                            range: [34, 42],
-                            loc: {
-                                start: { line: 1, column: 34 },
-                                end: { line: 1, column: 42 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [34, 39],
-                                loc: {
-                                    start: { line: 1, column: 34 },
-                                    end: { line: 1, column: 39 }
-                                },
-                                type: "Identifier",
-                                name: "three"
-                            },
-                            value: {
-                                range: [41, 42],
-                                loc: {
-                                    start: { line: 1, column: 41 },
-                                    end: { line: 1, column: 42 }
-                                },
-                                type: "Literal",
-                                value: 3,
-                                raw: "3"
-                            },
-                            kind: "init"
-                        }]
-                    }
-                }],
-                kind: "var"
-            }],
-            errors: [{
-                index: 28,
-                lineNumber: 1,
-                column: 29,
-                message: "Error: Line 1: Unexpected token two"
-            }, {
-                index: 34,
-                lineNumber: 1,
-                column: 35,
-                message: "Error: Line 1: Unexpected token three"
-            }]
-        },
-        
-        /** mixed recovery - missing comma */
-        'var o = {one: function() {} two:2, three: 3 "four":4};': {
-            range: [0, 54],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 54 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 54],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 54 }
-                },
-                type: "VariableDeclaration",
-                declarations: [{
-                    range: [4, 53],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 53 }
-                    },
-                    type: "VariableDeclarator",
-                    id: {
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        },
-                        type: "Identifier",
-                        name: "o"
-                    },
-                    init: {
-                        range: [8, 53],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 53 }
-                        },
-                        type: "ObjectExpression",
-                        properties: [{
-                            range: [9, 27],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 27 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [9, 12],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 12 }
-                                },
-                                type: "Identifier",
-                                name: "one"
-                            },
-                            value: {
-                                range: [14, 27],
-                                loc: {
-                                    start: { line: 1, column: 14 },
-                                    end: { line: 1, column: 27 }
-                                },
-                                type: "FunctionExpression",
-                                id: null,
-                                params: [],
-                                defaults: [],
-                                body: {
-                                    range: [25, 27],
-                                    loc: {
-                                        start: { line: 1, column: 25 },
-                                        end: { line: 1, column: 27 }
-                                    },
-                                    type: "BlockStatement",
-                                    body: []
-                                },
-                                rest: null,
-                                generator: false,
-                                expression: false
-                            },
-                            kind: "init"
-                        }, {
-                            range: [28, 33],
-                            loc: {
-                                start: { line: 1, column: 28 },
-                                end: { line: 1, column: 33 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [28, 31],
-                                loc: {
-                                    start: { line: 1, column: 28 },
-                                    end: { line: 1, column: 31 }
-                                },
-                                type: "Identifier",
-                                name: "two"
-                            },
-                            value: {
-                                range: [32, 33],
-                                loc: {
-                                    start: { line: 1, column: 32 },
-                                    end: { line: 1, column: 33 }
-                                },
-                                type: "Literal",
-                                value: 2,
-                                raw: "2"
-                            },
-                            kind: "init"
-                        }, {
-                            range: [35, 43],
-                            loc: {
-                                start: { line: 1, column: 35 },
-                                end: { line: 1, column: 43 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [35, 40],
-                                loc: {
-                                    start: { line: 1, column: 35 },
-                                    end: { line: 1, column: 40 }
-                                },
-                                type: "Identifier",
-                                name: "three"
-                            },
-                            value: {
-                                range: [42, 43],
-                                loc: {
-                                    start: { line: 1, column: 42 },
-                                    end: { line: 1, column: 43 }
-                                },
-                                type: "Literal",
-                                value: 3,
-                                raw: "3"
-                            },
-                            kind: "init"
-                        }, {
-                            range: [44, 52],
-                            loc: {
-                                start: { line: 1, column: 44 },
-                                end: { line: 1, column: 52 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [44, 50],
-                                loc: {
-                                    start: { line: 1, column: 44 },
-                                    end: { line: 1, column: 50 }
-                                },
-                                type: "Literal",
-                                value: "four",
-                                raw: "\"four\""
-                            },
-                            value: {
-                                range: [51, 52],
-                                loc: {
-                                    start: { line: 1, column: 51 },
-                                    end: { line: 1, column: 52 }
-                                },
-                                type: "Literal",
-                                value: 4,
-                                raw: "4"
-                            },
-                            kind: "init"
-                        }]
-                    }
-                }],
-                kind: "var"
-            }],
-            errors: [{
-                index: 28,
-                lineNumber: 1,
-                column: 29,
-                message: "Error: Line 1: Unexpected token two"
-            }, {
-                index: 44,
-                lineNumber: 1,
-                column: 45,
-                message: "Error: Line 1: Unexpected token four"
-            }]
-        },
-        
-        /** nested recovery - missing comma */
-        'var o = {one: function() {} two:2, three: {aa: "a" bb: "b"} four: 4};': {
-            range: [0, 69],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 69 }
-            },
-            type: "Program",
-            body: [{
-                range: [0, 69],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 69 }
-                },
-                type: "VariableDeclaration",
-                declarations: [{
-                    range: [4, 68],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 68 }
-                    },
-                    type: "VariableDeclarator",
-                    id: {
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        },
-                        type: "Identifier",
-                        name: "o"
-                    },
-                    init: {
-                        range: [8, 68],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 68 }
-                        },
-                        type: "ObjectExpression",
-                        properties: [{
-                            range: [9, 27],
-                            loc: {
-                                start: { line: 1, column: 9 },
-                                end: { line: 1, column: 27 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [9, 12],
-                                loc: {
-                                    start: { line: 1, column: 9 },
-                                    end: { line: 1, column: 12 }
-                                },
-                                type: "Identifier",
-                                name: "one"
-                            },
-                            value: {
-                                range: [14, 27],
-                                loc: {
-                                    start: { line: 1, column: 14 },
-                                    end: { line: 1, column: 27 }
-                                },
-                                type: "FunctionExpression",
-                                id: null,
-                                params: [],
-                                defaults: [],
-                                body: {
-                                    range: [25, 27],
-                                    loc: {
-                                        start: { line: 1, column: 25 },
-                                        end: { line: 1, column: 27 }
-                                    },
-                                    type: "BlockStatement",
-                                    body: []
-                                },
-                                rest: null,
-                                generator: false,
-                                expression: false
-                            },
-                            kind: "init"
-                        }, {
-                            range: [28, 33],
-                            loc: {
-                                start: { line: 1, column: 28 },
-                                end: { line: 1, column: 33 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [28, 31],
-                                loc: {
-                                    start: { line: 1, column: 28 },
-                                    end: { line: 1, column: 31 }
-                                },
-                                type: "Identifier",
-                                name: "two"
-                            },
-                            value: {
-                                range: [32, 33],
-                                loc: {
-                                    start: { line: 1, column: 32 },
-                                    end: { line: 1, column: 33 }
-                                },
-                                type: "Literal",
-                                value: 2,
-                                raw: "2"
-                            },
-                            kind: "init"
-                        }, {
-                            range: [35, 59],
-                            loc: {
-                                start: { line: 1, column: 35 },
-                                end: { line: 1, column: 59 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [35, 40],
-                                loc: {
-                                    start: { line: 1, column: 35 },
-                                    end: { line: 1, column: 40 }
-                                },
-                                type: "Identifier",
-                                name: "three"
-                            },
-                            value: {
-                                range: [42, 59],
-                                loc: {
-                                    start: { line: 1, column: 42 },
-                                    end: { line: 1, column: 59 }
-                                },
-                                type: "ObjectExpression",
-                                properties: [{
-                                    range: [43, 50],
-                                    loc: {
-                                        start: { line: 1, column: 43 },
-                                        end: { line: 1, column: 50 }
-                                    },
-                                    type: "Property",
-                                    key: {
-                                        range: [43, 45],
-                                        loc: {
-                                            start: { line: 1, column: 43 },
-                                            end: { line: 1, column: 45 }
-                                        },
-                                        type: "Identifier",
-                                        name: "aa"
-                                    },
-                                    value: {
-                                        range: [47, 50],
-                                        loc: {
-                                            start: { line: 1, column: 47 },
-                                            end: { line: 1, column: 50 }
-                                        },
-                                        type: "Literal",
-                                        value: "a",
-                                        raw: "\"a\""
-                                    },
-                                    kind: "init"
-                                }, {
-                                    range: [51, 58],
-                                    loc: {
-                                        start: { line: 1, column: 51 },
-                                        end: { line: 1, column: 58 }
-                                    },
-                                    type: "Property",
-                                    key: {
-                                        range: [51, 53],
-                                        loc: {
-                                            start: { line: 1, column: 51 },
-                                            end: { line: 1, column: 53 }
-                                        },
-                                        type: "Identifier",
-                                        name: "bb"
-                                    },
-                                    value: {
-                                        range: [55, 58],
-                                        loc: {
-                                            start: { line: 1, column: 55 },
-                                            end: { line: 1, column: 58 }
-                                        },
-                                        type: "Literal",
-                                        value: "b",
-                                        raw: "\"b\""
-                                    },
-                                    kind: "init"
-                                }]
-                            },
-                            kind: "init"
-                        }, {
-                            range: [60, 67],
-                            loc: {
-                                start: { line: 1, column: 60 },
-                                end: { line: 1, column: 67 }
-                            },
-                            type: "Property",
-                            key: {
-                                range: [60, 64],
-                                loc: {
-                                    start: { line: 1, column: 60 },
-                                    end: { line: 1, column: 64 }
-                                },
-                                type: "Identifier",
-                                name: "four"
-                            },
-                            value: {
-                                range: [66, 67],
-                                loc: {
-                                    start: { line: 1, column: 66 },
-                                    end: { line: 1, column: 67 }
-                                },
-                                type: "Literal",
-                                value: 4,
-                                raw: "4"
-                            },
-                            kind: "init"
-                        }]
-                    }
-                }],
-                kind: "var"
-            }],
-            errors: [{
-                index: 28,
-                lineNumber: 1,
-                column: 29,
-                message: "Error: Line 1: Unexpected token two"
-            }, {
-                index: 51,
-                lineNumber: 1,
-                column: 52,
-                message: "Error: Line 1: Unexpected token bb"
-            }, {
-                index: 60,
-                lineNumber: 1,
-                column: 61,
-                message: "Error: Line 1: Unexpected token four"
-            }]
-        },
-         
         'return': {
             type: 'Program',
             body: [{
@@ -25904,6 +20643,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [16, 19],
                             loc: {
                                 start: { line: 1, column: 16 },
@@ -25931,6 +20673,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [20, 23],
                             loc: {
                                 start: { line: 1, column: 20 },
@@ -26957,6 +21702,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'set',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [20, 34],
                             loc: {
                                 start: { line: 1, column: 20 },
@@ -27181,6 +21929,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [24, 30],
                             loc: {
                                 start: { line: 1, column: 24 },
@@ -27288,6 +22039,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'get',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [24, 34],
                             loc: {
                                 start: { line: 1, column: 24 },
@@ -27328,6 +22082,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'get',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [36, 46],
                             loc: {
                                 start: { line: 1, column: 36 },
@@ -27422,6 +22179,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [24, 29],
                             loc: {
                                 start: { line: 1, column: 24 },
@@ -27462,6 +22222,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'get',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [31, 41],
                             loc: {
                                 start: { line: 1, column: 31 },
@@ -27577,6 +22340,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'set',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [24, 35],
                             loc: {
                                 start: { line: 1, column: 24 },
@@ -27604,6 +22370,9 @@ var testFixture = {
                                 }
                             },
                             kind: 'init',
+                            method: false,
+                            shorthand: false,
+                            computed: false,
                             range: [37, 42],
                             loc: {
                                 start: { line: 1, column: 37 },
@@ -27642,444 +22411,10 @@ var testFixture = {
             }]
 
 
-        },
-
-        '({ set s() { } })': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'ObjectExpression',
-                    properties: [{
-                        type: 'Property',
-                        key: {
-                            type: 'Identifier',
-                            name: 's',
-                            range: [7, 8],
-                            loc: {
-                                start: { line: 1, column: 7 },
-                                end: { line: 1, column: 8 }
-                            }
-                        },
-                        value: {
-                            type: 'FunctionExpression',
-                            id: null,
-                            params: [],
-                            defaults: [],
-                            body: {
-                                type: 'BlockStatement',
-                                body: [],
-                                range: [11, 14],
-                                loc: {
-                                    start: { line: 1, column: 11 },
-                                    end: { line: 1, column: 14 }
-                                }
-                            },
-                            rest: null,
-                            generator: false,
-                            expression: false,
-                            range: [11, 14],
-                            loc: {
-                                start: { line: 1, column: 11 },
-                                end: { line: 1, column: 14 }
-                            }
-                        },
-                        kind: 'set',
-                        range: [3, 14],
-                        loc: {
-                            start: { line: 1, column: 3 },
-                            end: { line: 1, column: 14 }
-                        }
-                    }],
-                    range: [1, 16],
-                    loc: {
-                        start: { line: 1, column: 1 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                range: [0, 17],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 17 }
-                }
-            }],
-            range: [0, 17],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 17 }
-            },
-            errors: [{
-                index: 9,
-                lineNumber: 1,
-                column: 10,
-                message: 'Error: Line 1: Unexpected token )'
-            }]
-        },
-
-        'foo("bar") = baz': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'AssignmentExpression',
-                    operator: '=',
-                    left: {
-                        type: 'CallExpression',
-                        callee: {
-                            type: 'Identifier',
-                            name: 'foo',
-                            range: [0, 3],
-                            loc: {
-                                start: { line: 1, column: 0 },
-                                end: { line: 1, column: 3 }
-                            }
-                        },
-                        'arguments': [{
-                            type: 'Literal',
-                            value: 'bar',
-                            raw: '"bar"',
-                            range: [4, 9],
-                            loc: {
-                                start: { line: 1, column: 4 },
-                                end: { line: 1, column: 9 }
-                            }
-                        }],
-                        range: [0, 10],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 10 }
-                        }
-                    },
-                    right: {
-                        type: 'Identifier',
-                        name: 'baz',
-                        range: [13, 16],
-                        loc: {
-                            start: { line: 1, column: 13 },
-                            end: { line: 1, column: 16 }
-                        }
-                    },
-                    range: [0, 16],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                range: [0, 16],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 16 }
-                }
-            }],
-            range: [0, 16],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 16 }
-            },
-            errors: [{
-                index: 10,
-                lineNumber: 1,
-                column: 11,
-                message: 'Error: Line 1: Invalid left-hand side in assignment'
-            }]
-        },
-
-        '1 = 2': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'AssignmentExpression',
-                    operator: '=',
-                    left: {
-                        type: 'Literal',
-                        value: 1,
-                        raw: '1',
-                        range: [0, 1],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 1 }
-                        }
-                    },
-                    right: {
-                        type: 'Literal',
-                        value: 2,
-                        raw: '2',
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        }
-                    },
-                    range: [0, 5],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 5 }
-                    }
-                },
-                range: [0, 5],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 5 }
-                }
-            }],
-            range: [0, 5],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 5 }
-            },
-            errors: [{
-                index: 1,
-                lineNumber: 1,
-                column: 2,
-                message: 'Error: Line 1: Invalid left-hand side in assignment'
-            }]
-        },
-
-        '3++': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'UpdateExpression',
-                    operator: '++',
-                    argument: {
-                        type: 'Literal',
-                        value: 3,
-                        raw: '3',
-                        range: [0, 1],
-                        loc: {
-                            start: { line: 1, column: 0 },
-                            end: { line: 1, column: 1 }
-                        }
-                    },
-                    prefix: false,
-                    range: [0, 3],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 3 }
-                    }
-                },
-                range: [0, 3],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 3 }
-                }
-            }],
-            range: [0, 3],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 3 }
-            },
-            errors: [{
-                index: 1,
-                lineNumber: 1,
-                column: 2,
-                message: 'Error: Line 1: Invalid left-hand side in assignment'
-            }]
-        },
-
-        '--4': {
-            type: 'Program',
-            body: [{
-                type: 'ExpressionStatement',
-                expression: {
-                    type: 'UpdateExpression',
-                    operator: '--',
-                    argument: {
-                        type: 'Literal',
-                        value: 4,
-                        raw: '4',
-                        range: [2, 3],
-                        loc: {
-                            start: { line: 1, column: 2 },
-                            end: { line: 1, column: 3 }
-                        }
-                    },
-                    prefix: true,
-                    range: [0, 3],
-                    loc: {
-                        start: { line: 1, column: 0 },
-                        end: { line: 1, column: 3 }
-                    }
-                },
-                range: [0, 3],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 3 }
-                }
-            }],
-            range: [0, 3],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 3 }
-            },
-            errors: [{
-                index: 3,
-                lineNumber: 1,
-                column: 4,
-                message: 'Error: Line 1: Invalid left-hand side in assignment'
-            }]
-        },
-
-        'for (5 in []) {}': {
-            type: 'Program',
-            body: [{
-                type: 'ForInStatement',
-                left: {
-                    type: 'Literal',
-                    value: 5,
-                    raw: '5',
-                    range: [5, 6],
-                    loc: {
-                        start: { line: 1, column: 5 },
-                        end: { line: 1, column: 6 }
-                    }
-                },
-                right: {
-                    type: 'ArrayExpression',
-                    elements: [],
-                    range: [10, 12],
-                    loc: {
-                        start: { line: 1, column: 10 },
-                        end: { line: 1, column: 12 }
-                    }
-                },
-                body: {
-                    type: 'BlockStatement',
-                    body: [],
-                    range: [14, 16],
-                    loc: {
-                        start: { line: 1, column: 14 },
-                        end: { line: 1, column: 16 }
-                    }
-                },
-                each: false,
-                range: [0, 16],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 16 }
-                }
-            }],
-            range: [0, 16],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 16 }
-            },
-            errors: [{
-                index: 6,
-                lineNumber: 1,
-                column: 7,
-                message: 'Error: Line 1: Invalid left-hand side in for-in'
-            }]
-        },
-
-        'var x = /[P QR]/\\g': {
-            type: "Program",
-            body: [{
-                type: "VariableDeclaration",
-                declarations: [{
-                    type: "VariableDeclarator",
-                    id: {
-                        type: "Identifier",
-                        name: "x",
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        }
-                    },
-                    init: {
-                        type: "Literal",
-                        value: "/[P QR]/g",
-                        raw: "/[P QR]/\\g",
-                        range: [8, 18],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 18 }
-                        }
-                    },
-                    range: [4, 18],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 18 }
-                    }
-                }],
-                kind: "var",
-                range: [0, 18],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 18 }
-                }
-            }],
-            range: [0, 18],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 18 }
-            },
-            errors: [{
-                index: 17,
-                lineNumber: 1,
-                column: 18,
-                message: "Error: Line 1: Unexpected token ILLEGAL"
-            }]
-        },
-
-        'var x = /[P QR]/\\\\u0067': {
-            type: "Program",
-            body: [{
-                type: "VariableDeclaration",
-                declarations: [{
-                    type: "VariableDeclarator",
-                    id: {
-                        type: "Identifier",
-                        name: "x",
-                        range: [4, 5],
-                        loc: {
-                            start: { line: 1, column: 4 },
-                            end: { line: 1, column: 5 }
-                        }
-                    },
-                    init: {
-                        type: "Literal",
-                        value: "/[P QR]/g",
-                        raw: "/[P QR]/\\\\u0067",
-                        range: [8, 23],
-                        loc: {
-                            start: { line: 1, column: 8 },
-                            end: { line: 1, column: 23 }
-                        }
-                    },
-                    range: [4, 23],
-                    loc: {
-                        start: { line: 1, column: 4 },
-                        end: { line: 1, column: 23 }
-                    }
-                }],
-                kind: "var",
-                range: [0, 23],
-                loc: {
-                    start: { line: 1, column: 0 },
-                    end: { line: 1, column: 23 }
-                }
-            }],
-            range: [0, 23],
-            loc: {
-                start: { line: 1, column: 0 },
-                end: { line: 1, column: 23 }
-            },
-            errors: [{
-                index: 17,
-                lineNumber: 1,
-                column: 18,
-                message: "Error: Line 1: Unexpected token ILLEGAL"
-            }, {
-                index: 23,
-                lineNumber: 1,
-                column: 24,
-                message: "Error: Line 1: Unexpected token ILLEGAL"
-            }]
         }
+
 
     }
 };
+
+
